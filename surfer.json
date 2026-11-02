@@ -45,6 +45,18 @@
           "repo": "zen-browser/desktop"
         }
       }
+    },
+    "metta": {
+      "backgroundColor": "#282A33",
+      "brandShorterName": "Metta",
+      "brandShortName": "Metta",
+      "brandFullName": "Metta",
+      "release": {
+        "displayVersion": "1.24b",
+        "github": {
+          "repo": "seudio/zen-desktop"
+        }
+      }
     }
   },
   "license": {
