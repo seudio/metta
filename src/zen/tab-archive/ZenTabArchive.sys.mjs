@@ -853,7 +853,7 @@ class nsZenTabArchive {
     for (const window of lazy.BrowserWindowTracker.orderedWindows) {
       let closed;
       try {
-        closed = lazy.SessionStore.getClosedTabData(window);
+        closed = lazy.SessionStore.getClosedTabDataForWindow(window);
       } catch {
         continue;
       }

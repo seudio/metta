@@ -63,7 +63,7 @@ add_task(async function test_restore_into_the_original_space_and_container() {
   );
   ok(!recordFor(url), "the record leaves the archive");
   ok(
-    !SessionStore.getClosedTabData(window).some(
+    !SessionStore.getClosedTabDataForWindow(window).some(
       entry => entry.state?.extData?.[ARCHIVE_ID_KEY] === record.id
     ),
     "and Undo Close Tab will not reopen it a second time"
