@@ -47,6 +47,8 @@ const HISTORY_DAYS_OLD = 120;
 const SORT_OPTIONS = ["date", "site", "mostvisited", "lastvisited"];
 const CLOSED_TABS_PREF = "zen.library.history.closed-tabs";
 const CLOSED_OBJECTS_TOPIC = "sessionstore-closed-objects-changed";
+// Set by ZenTabArchive.sys.mjs on the tabs it closes.
+const ARCHIVE_ID_KEY = "zen-archive-id";
 
 const visitKey = visit => `${visit.guid}-${visit.date.getTime()}`;
 
@@ -115,12 +117,6 @@ async function clearHistory(range) {
 export class ZenLibraryHistorySection extends ZenLibrarySearchSection {
   static id = "history";
   static label = "library-history-section-title";
-
-  static get tabLabel() {
-    return Services.prefs.getBoolPref(CLOSED_TABS_PREF, false)
-      ? "library-archive-section-title"
-      : this.label;
-  }
 
   static render(library) {
     return html`
@@ -377,6 +373,10 @@ export class ZenLibraryHistorySection extends ZenLibrarySearchSection {
     })) {
       const entry = tab.state?.entries?.[tab.state.index - 1];
       if (!entry?.url || tab.closedAt < cutoff) {
+        continue;
+      }
+      // Tabs Auto Archive closed are listed in the archive instead.
+      if (tab.state.extData?.[ARCHIVE_ID_KEY]) {
         continue;
       }
       const title = tab.title || entry.title || entry.url;

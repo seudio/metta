@@ -1,0 +1,15 @@
+<!doctype html>
+<!-- Any copyright is dedicated to the Public Domain.
+     https://creativecommons.org/publicdomain/zero/1.0/ -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Unsaved form</title>
+  </head>
+  <body>
+    <textarea>A draft the user has not saved</textarea>
+    <script>
+      window.addEventListener("beforeunload", event => event.preventDefault());
+    </script>
+  </body>
+</html>

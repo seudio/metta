@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 MOZ_SRC_FILES += [
+  "sections/ZenLibraryArchiveSection.mjs",
   "sections/ZenLibraryBoostsSection.mjs",
   "sections/ZenLibraryDownloadsSection.mjs",
   "sections/ZenLibraryHistorySection.mjs",

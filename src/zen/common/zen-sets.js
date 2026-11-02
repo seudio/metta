@@ -58,6 +58,8 @@
     cmd_zenUnloadWorkspace: () => gZenWorkspaces.unloadWorkspace(),
     cmd_zenUnloadAllOtherWorkspace: () =>
       gZenWorkspaces.unloadAllOtherWorkspaces(),
+    cmd_zenToggleWorkspaceAutoArchive: () =>
+      gZenWorkspaces.toggleWorkspaceAutoArchive(),
     cmd_zenOpenSpaceRoutingSettings: () =>
       gZenSpaceRoutingManager.openSpaceRoutingSettings(window),
 

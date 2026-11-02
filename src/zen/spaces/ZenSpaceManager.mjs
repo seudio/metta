@@ -1402,6 +1402,21 @@ class nsZenWorkspaces {
     themePicker.hidden =
       this.#contextMenuData.workspaceId &&
       this.#contextMenuData.workspaceId !== this.activeWorkspace;
+    const autoArchive = document.getElementById(
+      "context_zenAutoArchiveWorkspace"
+    );
+    const menuWorkspace = this.getWorkspaceFromId(
+      this.#contextMenuData.workspaceId || this.activeWorkspace
+    );
+    autoArchive.hidden = !Services.prefs.getIntPref(
+      "zen.tabs.auto-archive.threshold-hours",
+      12
+    );
+    if (menuWorkspace?.autoArchive === false) {
+      autoArchive.removeAttribute("checked");
+    } else {
+      autoArchive.setAttribute("checked", "true");
+    }
     const separator = document.getElementById("context_zenWorkspacesSeparator");
     for (const item of event.target.querySelectorAll(
       ".zen-workspace-context-menu-item"
@@ -1759,6 +1774,25 @@ class nsZenWorkspaces {
     this.log("Unloading workspace", workspaceId);
 
     await gBrowser.explicitUnloadTabs(tabsToUnload); // TODO: unit test this
+  }
+
+  /**
+   * Turns Auto Archive on or off for the space the menu was opened on. The
+   * flag is only stored while it is off, so spaces default to archiving.
+   */
+  async toggleWorkspaceAutoArchive() {
+    const workspace = this.getWorkspaceFromId(
+      this.#contextMenuData?.workspaceId || this.activeWorkspace
+    );
+    if (!workspace) {
+      return;
+    }
+    if (workspace.autoArchive === false) {
+      delete workspace.autoArchive;
+    } else {
+      workspace.autoArchive = false;
+    }
+    await this.saveWorkspace(workspace);
   }
 
   async unloadAllOtherWorkspaces() {

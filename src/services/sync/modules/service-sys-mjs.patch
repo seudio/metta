@@ -2,13 +2,17 @@ diff --git a/services/sync/modules/service.sys.mjs b/services/sync/modules/servi
 index 4f4efe572909441abdd81909282936702c225621..2b47a2c9e97cf87641a0be9814f9a6be4d43f6ea 100644
 --- a/services/sync/modules/service.sys.mjs
 +++ b/services/sync/modules/service.sys.mjs
-@@ -99,6 +99,10 @@ function getEngineModules() {
+@@ -99,6 +99,14 @@ function getEngineModules() {
      whenTrue: "ExtensionStorageEngineKinto",
      whenFalse: "ExtensionStorageEngineBridge",
    };
 +  result.Spaces = {
 +    module: "resource:///modules/zen/ZenSpacesSync.sys.mjs",
 +    symbol: "ZenSpacesSyncEngine",
++  };
++  result.TabArchive = {
++    module: "resource:///modules/zen/ZenTabArchiveSync.sys.mjs",
++    symbol: "ZenTabArchiveSyncEngine",
 +  };
    return result;
  }

@@ -30,6 +30,7 @@
   <menuitem id="context_zenManageWorkspaces" data-l10n-id="zen-workspaces-panel-context-manage" command="cmd_zenManageWorkspaces"/>
   <menuitem id="context_zenUnloadWorkspace" data-l10n-id="zen-workspaces-panel-unload" command="cmd_zenUnloadWorkspace"/>
   <menuitem id="context_zenUnloadAllOtherWorkspace" data-l10n-id="zen-workspaces-panel-unload-others" command="cmd_zenUnloadAllOtherWorkspace"/>
+  <menuitem id="context_zenAutoArchiveWorkspace" type="checkbox" data-l10n-id="zen-workspaces-panel-auto-archive" command="cmd_zenToggleWorkspaceAutoArchive"/>
   <menuseparator/>
   <menuitem data-l10n-id="zen-panel-ui-workspaces-create" command="cmd_zenOpenWorkspaceCreation"/>
   <menuitem id="context_zenShareWorkspace" data-l10n-id="zen-share-space" command="cmd_zenCtxShareWorkspace"/>

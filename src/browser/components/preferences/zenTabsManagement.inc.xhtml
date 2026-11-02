@@ -77,6 +77,40 @@
       </hbox>
 </groupbox>
 
+<hbox id="zenTabArchiveCategory"
+      class="subcategory"
+      hidden="true"
+      data-category="paneZenTabManagement">
+      <html:h1 data-l10n-id="pane-zen-tab-archive-title"/>
+</hbox>
+
+<groupbox id="zenTabArchiveGroup" data-category="paneZenTabManagement" hidden="true" class="highlighting-group">
+      <label><html:h2 data-l10n-id="zen-tab-archive-header"/></label>
+      <description class="description-deemphasized" data-l10n-id="zen-tab-archive-description" />
+
+      <hbox align="center">
+            <label id="zenTabArchiveThresholdLabel" data-l10n-id="zen-tab-archive-threshold-label" control="zenTabArchiveThreshold"/>
+            <menulist id="zenTabArchiveThreshold" preference="zen.tabs.auto-archive.threshold-hours">
+                  <menupopup>
+                        <menuitem data-l10n-id="zen-tab-archive-threshold-12-hours" value="12"/>
+                        <menuitem data-l10n-id="zen-tab-archive-threshold-24-hours" value="24"/>
+                        <menuitem data-l10n-id="zen-tab-archive-threshold-7-days" value="168"/>
+                        <menuitem data-l10n-id="zen-tab-archive-threshold-30-days" value="720"/>
+                        <menuitem data-l10n-id="zen-tab-archive-threshold-never" value="0"/>
+                  </menupopup>
+            </menulist>
+      </hbox>
+
+      <hbox align="center">
+            <button id="zenTabArchiveNowButton" data-l10n-id="zen-tab-archive-now"/>
+            <label id="zenTabArchiveNowResult" class="description-deemphasized" hidden="true"/>
+      </hbox>
+      <description id="zenTabArchiveWriteFailed"
+            class="description-deemphasized"
+            data-l10n-id="zen-tab-archive-write-failed"
+            hidden="true"/>
+</groupbox>
+
 </html:template>
 
 

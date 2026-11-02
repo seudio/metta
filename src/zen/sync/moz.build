@@ -6,4 +6,5 @@ EXTRA_JS_MODULES.zen += [
     "ZenSpacesSync.sys.mjs",
     "ZenSpacesSyncApplier.sys.mjs",
     "ZenSpacesSyncModel.sys.mjs",
+    "ZenTabArchiveSync.sys.mjs",
 ]

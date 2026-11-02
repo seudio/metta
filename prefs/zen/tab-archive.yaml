@@ -1,0 +1,26 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# Hours a tab must be idle before it is unloaded, and again before it is
+# archived. 0 turns Auto Archive off.
+- name: zen.tabs.auto-archive.threshold-hours
+  value: 12
+
+- name: zen.tabs.auto-archive.check-interval-minutes
+  value: 15
+
+- name: zen.tabs.auto-archive.startup-delay-seconds
+  value: 120
+
+- name: zen.tabs.auto-archive.retention-days
+  value: 90
+
+- name: zen.tabs.auto-archive.max-records
+  value: 5000
+
+- name: zen.tabs.auto-archive.debug
+  value: false
+
+- name: services.sync.prefs.sync.zen.tabs.auto-archive.threshold-hours
+  value: true

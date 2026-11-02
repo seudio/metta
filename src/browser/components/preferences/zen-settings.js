@@ -736,6 +736,33 @@ var gZenWorkspacesSettings = {
 
     toggleZenCycleByAttrWarning.observe(); // call it once on initial load
 
+    let tabArchiveWriteFailed = {
+      observe() {
+        document.getElementById("zenTabArchiveWriteFailed").hidden = !Services.prefs.getBoolPref(
+          "zen.tabs.auto-archive.write-failed",
+          false
+        );
+      },
+    };
+    tabArchiveWriteFailed.observe();
+    Services.prefs.addObserver("zen.tabs.auto-archive.write-failed", tabArchiveWriteFailed);
+
+    const archiveNowButton = document.getElementById("zenTabArchiveNowButton");
+    archiveNowButton.addEventListener("command", async () => {
+      const { gZenTabArchive } = ChromeUtils.importESModule(
+        "resource:///modules/zen/ZenTabArchive.sys.mjs"
+      );
+      archiveNowButton.disabled = true;
+      try {
+        const count = await gZenTabArchive.archiveNow();
+        const result = document.getElementById("zenTabArchiveNowResult");
+        document.l10n.setAttributes(result, "zen-tab-archive-now-done", { count });
+        result.hidden = false;
+      } finally {
+        archiveNowButton.disabled = false;
+      }
+    });
+
     Services.prefs.addObserver("zen.glance.enabled", tabsUnloaderPrefListener); // We can use the same listener for both prefs
     Services.prefs.addObserver("zen.workspaces.separate-essentials", tabsUnloaderPrefListener);
     Services.prefs.addObserver("zen.window-sync.sync-only-pinned-tabs", tabsUnloaderPrefListener);
@@ -745,6 +772,7 @@ var gZenWorkspacesSettings = {
     );
     Services.prefs.addObserver("browser.ctrlTab.sortByRecentlyUsed", toggleZenCycleByAttrWarning);
     window.addEventListener("unload", () => {
+      Services.prefs.removeObserver("zen.tabs.auto-archive.write-failed", tabArchiveWriteFailed);
       Services.prefs.removeObserver("zen.glance.enabled", tabsUnloaderPrefListener);
       Services.prefs.removeObserver("zen.workspaces.separate-essentials", tabsUnloaderPrefListener);
       Services.prefs.removeObserver(
@@ -783,6 +811,11 @@ Preferences.addAll([
     id: "zen.pinned-tab-manager.restore-pinned-tabs-to-pinned-url",
     type: "bool",
     default: true,
+  },
+  {
+    id: "zen.tabs.auto-archive.threshold-hours",
+    type: "int",
+    default: 12,
   },
   {
     id: "zen.pinned-tab-manager.close-shortcut-behavior",

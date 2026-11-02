@@ -6,6 +6,12 @@
   value: "@cond"
   condition: "@IS_TWILIGHT@"
 
+# Shipped alongside Spaces sync, which archive records rely on to find the
+# space a tab came from on another device.
+- name: services.sync.engine.tabarchive
+  value: "@cond"
+  condition: "@IS_TWILIGHT@"
+
 - name: zen.spaces-sync.debug
   value: false
 

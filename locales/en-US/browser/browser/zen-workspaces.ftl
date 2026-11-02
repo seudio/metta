@@ -38,6 +38,9 @@ zen-workspaces-panel-unload =
 zen-workspaces-panel-unload-others =
     .label = Unload All Other Spaces
 
+zen-workspaces-panel-auto-archive =
+    .label = Archive Inactive Tabs
+
 zen-workspaces-change-theme =
     .label = Theme…
 
@@ -100,3 +103,6 @@ zen-panel-ui-workspaces-change-forward =
 
 zen-panel-ui-workspaces-change-back =
     .label = Previous Space
+
+zen-tab-archive-restored-other-space = Its space was deleted, so the tab opened in { $space }
+zen-tab-archive-restored-default-container = Its container is gone, so the tab opened without one

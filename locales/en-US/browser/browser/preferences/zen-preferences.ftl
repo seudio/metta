@@ -109,6 +109,29 @@ zen-pinned-tab-manager-close-close-shortcut-option =
     .label = Close tab
 
 pane-zen-workspaces-header = Workspaces
+pane-zen-tab-archive-title = Auto Archive
+zen-tab-archive-header = Archive inactive tabs
+zen-tab-archive-description = Tabs you have not used for a while are unloaded, then moved to the Archive in the Library one period later. Pinned tabs, Essentials, and tabs playing media or with unsaved changes are never archived.
+zen-tab-archive-threshold-label = Archive tabs after
+zen-tab-archive-threshold-12-hours =
+    .label = 12 hours
+zen-tab-archive-threshold-24-hours =
+    .label = 24 hours
+zen-tab-archive-threshold-7-days =
+    .label = 7 days
+zen-tab-archive-threshold-30-days =
+    .label = 30 days
+zen-tab-archive-threshold-never =
+    .label = Never
+zen-tab-archive-now =
+    .label = Archive Inactive Tabs Now
+zen-tab-archive-now-done =
+    { $count ->
+        [one] Archived 1 tab
+       *[other] Archived { $count } tabs
+    }
+zen-tab-archive-write-failed = Auto Archive is paused because the archive could not be saved. Archive inactive tabs now to try again.
+
 zen-settings-workspaces-header = General settings for workspaces
 zen-settings-workspaces-description = With workspaces, you can have multiple browsing sessions at once!
 zen-settings-workspaces-enabled =

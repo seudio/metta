@@ -1,0 +1,22 @@
+<!doctype html>
+<!-- Any copyright is dedicated to the Public Domain.
+     https://creativecommons.org/publicdomain/zero/1.0/ -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Saved document</title>
+  </head>
+  <body>
+    <textarea>Everything here is saved</textarea>
+    <script>
+      // Like many web apps, it listens all the time and only objects when
+      // there is something unsaved.
+      window.unsaved = false;
+      window.addEventListener("beforeunload", event => {
+        if (window.unsaved) {
+          event.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>
