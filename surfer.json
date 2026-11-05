@@ -52,7 +52,7 @@
       "brandShortName": "Metta",
       "brandFullName": "Metta",
       "release": {
-        "displayVersion": "1.24b",
+        "displayVersion": "1.24.1b",
         "github": {
           "repo": "seudio/zen-desktop"
         }
