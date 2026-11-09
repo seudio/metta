@@ -122,3 +122,61 @@ add_task(function test_monthly_rules() {
     "The series ends after 12 occurrences"
   );
 });
+
+add_task(function test_an_occurrence_moved_earlier_into_the_window() {
+  const feed = [
+    "BEGIN:VCALENDAR",
+    "BEGIN:VEVENT",
+    "DTSTART:20260105T170000Z",
+    "DTEND:20260105T173000Z",
+    "RRULE:FREQ=WEEKLY;BYDAY=TH",
+    "UID:weekly",
+    "SUMMARY:Planning",
+    "LOCATION:https://zoom.us/j/123",
+    "END:VEVENT",
+    "BEGIN:VEVENT",
+    "DTSTART:20261109T180000Z",
+    "DTEND:20261109T183000Z",
+    "RECURRENCE-ID:20261112T170000Z",
+    "UID:weekly",
+    "SUMMARY:Planning (early this week)",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+  const events = eventsBetween(
+    feed,
+    at("2026-11-09T00:00:00Z"),
+    at("2026-11-10T12:00:00Z")
+  );
+  Assert.deepEqual(
+    events.map(({ title, start }) => [title, new Date(start).toISOString()]),
+    [["Planning (early this week)", "2026-11-09T18:00:00.000Z"]],
+    "Thursday's meeting moved to Monday shows on Monday"
+  );
+  is(events[0].joinUrl, "https://zoom.us/j/123");
+});
+
+add_task(function test_daily_rule_limited_to_weekdays() {
+  const feed = [
+    "BEGIN:VCALENDAR",
+    "BEGIN:VEVENT",
+    "DTSTART:20261102T170000Z",
+    "DTEND:20261102T171500Z",
+    "RRULE:FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR",
+    "UID:weekdays",
+    "SUMMARY:Standup",
+    "LOCATION:https://zoom.us/j/123",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+  const events = eventsBetween(
+    feed,
+    at("2026-11-06T00:00:00Z"),
+    at("2026-11-10T00:00:00Z")
+  );
+  Assert.deepEqual(
+    events.map(({ start }) => new Date(start).toISOString()),
+    ["2026-11-06T17:00:00.000Z", "2026-11-09T17:00:00.000Z"],
+    "Friday and Monday, with no weekend in between"
+  );
+});

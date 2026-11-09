@@ -419,9 +419,14 @@ function* recurrenceWallTimes(start, rule) {
   for (let period = 0; period < MAX_PERIODS; period++) {
     let candidates;
     switch (rule.FREQ) {
-      case "DAILY":
-        candidates = [addDays(start, period * interval)];
+      case "DAILY": {
+        const day = addDays(start, period * interval);
+        // "Every weekday" is sometimes written as a daily rule with days.
+        const allowed = rule.BYDAY?.split(",").map(entry => entry.slice(-2));
+        candidates =
+          !allowed || allowed.includes(WEEKDAYS[weekday(day)]) ? [day] : [];
         break;
+      }
       case "WEEKLY": {
         // Weeks start on Monday unless the rule says otherwise.
         const weekStart = WEEKDAYS.indexOf(rule.WKST ?? "MO");
@@ -561,8 +566,9 @@ export function eventsBetween(text, from, to) {
     );
     const events = calendar.children.filter(({ type }) => type === "VEVENT");
 
-    // Edited or cancelled occurrences of a series, by series and start time.
-    const overrides = new Map();
+    // Edited or cancelled occurrences of a series, by series and start time,
+    // and the last one each series has.
+    const overrides = { byKey: new Map(), lastByUid: new Map() };
     for (const event of events) {
       const recurrenceId = firstProperty(event, "RECURRENCE-ID");
       const uid = firstProperty(event, "UID")?.value;
@@ -571,9 +577,11 @@ export function eventsBetween(text, from, to) {
       }
       const date = parseDateValue(recurrenceId);
       if (date) {
-        overrides.set(
-          `${uid} ${wallToTime(date.wall, date.zone ?? defaultZone)}`,
-          event
+        const time = wallToTime(date.wall, date.zone ?? defaultZone);
+        overrides.byKey.set(`${uid} ${time}`, event);
+        overrides.lastByUid.set(
+          uid,
+          Math.max(time, overrides.lastByUid.get(uid) ?? -Infinity)
         );
       }
     }
@@ -674,17 +682,24 @@ function occurrences(event, overrides, defaultZone, from, to) {
     }
   }
 
+  // An occurrence due after the window can have been moved into it, so the
+  // series is followed as far as its last edited occurrence.
+  const lastToCheck = Math.max(to, (overrides.lastByUid.get(uid) ?? 0) + 1);
   let seen = 0;
   for (const wall of recurrenceWallTimes(start.wall, rule)) {
     const occurrenceStart = wallToTime(wall, zone);
-    if (occurrenceStart > untilTime || seen >= count || occurrenceStart >= to) {
+    if (
+      occurrenceStart > untilTime ||
+      seen >= count ||
+      occurrenceStart >= lastToCheck
+    ) {
       break;
     }
     seen++;
     if (excluded.has(occurrenceStart)) {
       continue;
     }
-    const override = overrides.get(`${uid} ${occurrenceStart}`);
+    const override = overrides.byKey.get(`${uid} ${occurrenceStart}`);
     if (override) {
       const overrideStart = parseDateValue(firstProperty(override, "DTSTART"));
       const overrideEnd = firstProperty(override, "DTEND");
