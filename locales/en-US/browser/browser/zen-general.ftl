@@ -167,3 +167,18 @@ zen-window-sync-migration-dialog-accept = Got It
 zen-appmenu-new-blank-window =
     .label = New Blank Window
 
+
+zen-meeting-join =
+    .label = Join
+zen-meeting-dismiss =
+    .tooltiptext = Hide
+zen-meeting-untitled =
+    .value = Meeting
+zen-meeting-starting-now =
+    .value = Starting now
+# $minutes (Number) - Minutes until the meeting starts
+zen-meeting-starts-in =
+    .value = In { $minutes } min
+# $minutes (Number) - Minutes since the meeting started
+zen-meeting-started-ago =
+    .value = Started { $minutes } min ago

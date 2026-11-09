@@ -1,0 +1,105 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#zen-meeting-card {
+  gap: 2px;
+  min-width: 0;
+  margin-top: 6px;
+  padding: 4px 4px 6px 8px;
+  border-radius: var(--border-radius-medium);
+  @media (-moz-platform: macos) {
+    border-radius: calc(var(--border-radius-medium) - 2px);
+  }
+  outline: var(--zen-sidebar-notification-outline);
+  outline-offset: -1.5px;
+  box-shadow: var(--zen-sidebar-notification-shadow);
+  background-color: var(--zen-sidebar-notification-bg);
+  font-size: 12px;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+
+  :root:not([zen-sidebar-expanded="true"]) & {
+    display: none;
+  }
+
+  .zen-meeting-header,
+  .zen-meeting-footer {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .zen-meeting-icon {
+    list-style-image: url("chrome://browser/skin/zen-icons/video-fill.svg");
+    width: 14px;
+    height: 14px;
+    -moz-context-properties: fill;
+    fill: var(--zen-sidebar-themed-icon-fill);
+  }
+
+  &[started] .zen-meeting-icon {
+    fill: var(--zen-primary-color);
+  }
+
+  .zen-meeting-title {
+    margin: 0;
+    min-width: 0;
+    font-weight: 600;
+  }
+
+  .zen-meeting-subtitle {
+    min-width: 0;
+    opacity: 0.6;
+
+    & label {
+      margin: 0;
+      min-width: 0;
+    }
+
+    /* The time matters more than the service's name. */
+    & .zen-meeting-when {
+      flex-shrink: 0;
+    }
+
+    & .zen-meeting-separator {
+      margin-inline: 4px;
+    }
+  }
+
+  .zen-meeting-join {
+    margin: 0;
+    margin-inline-end: 4px;
+    min-width: 0;
+    min-height: 22px;
+    padding: 0 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: var(--button-text-color-primary);
+    background-color: var(--color-accent-primary);
+    appearance: none;
+
+    &:hover {
+      background-color: var(--color-accent-primary-hover);
+    }
+
+    &:hover:active {
+      background-color: var(--color-accent-primary-active);
+    }
+  }
+
+  .zen-meeting-close {
+    --toolbarbutton-padding-outer: 0;
+    --toolbarbutton-inner-padding: 4px;
+    list-style-image: url("chrome://browser/skin/zen-icons/close.svg");
+    opacity: 0.5;
+    border-radius: 5px;
+  }
+}

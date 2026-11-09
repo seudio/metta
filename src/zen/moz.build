@@ -16,6 +16,7 @@ DIRS += [
     "library",
     "live-folders",
     "media",
+    "meetings",
     "migration",
     "mods",
     "tests",

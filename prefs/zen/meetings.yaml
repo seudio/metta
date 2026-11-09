@@ -1,0 +1,14 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# The private iCal addresses of the calendars to watch, one per line.
+- name: zen.meetings.calendar-urls
+  value: ""
+
+# Minutes before a meeting starts that its Join card appears.
+- name: zen.meetings.lead-minutes
+  value: 5
+
+- name: zen.meetings.refresh-minutes
+  value: 10
