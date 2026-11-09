@@ -132,6 +132,33 @@ zen-tab-archive-now-done =
     }
 zen-tab-archive-write-failed = Auto Archive is paused because the archive could not be saved. Archive inactive tabs now to try again.
 
+pane-zen-meetings-title = Meetings
+zen-meetings-header = Join meetings from the sidebar
+zen-meetings-description = A few minutes before a meeting with a Zoom, Google Meet, Teams or Webex link, a Join button appears in the sidebar. Add the private address of each calendar to watch: in Google Calendar it is under Settings, your calendar, “Secret address in iCal format”; in Outlook, publish the calendar and copy its ICS link.
+zen-meetings-calendars-label = Calendar addresses, one per line
+zen-meetings-calendars-input =
+    .placeholder = https://calendar.google.com/calendar/ical/…/basic.ics
+# $count (Number) - Meetings with a video link left today
+zen-meetings-status =
+    { $count ->
+        [0] No more meetings with a video link today
+        [one] 1 more meeting with a video link today
+       *[other] { $count } more meetings with a video link today
+    }
+# $failed (Number) - Calendars that could not be loaded
+zen-meetings-status-failed =
+    { $failed ->
+        [one] 1 calendar could not be loaded. Check its address.
+       *[other] { $failed } calendars could not be loaded. Check their addresses.
+    }
+zen-meetings-lead-label = Show the Join button
+zen-meetings-lead-1 =
+    .label = 1 minute before
+zen-meetings-lead-5 =
+    .label = 5 minutes before
+zen-meetings-lead-10 =
+    .label = 10 minutes before
+
 zen-settings-workspaces-header = General settings for workspaces
 zen-settings-workspaces-description = With workspaces, you can have multiple browsing sessions at once!
 zen-settings-workspaces-enabled =

@@ -763,6 +763,32 @@ var gZenWorkspacesSettings = {
       }
     });
 
+    const { gZenMeetings } = ChromeUtils.importESModule(
+      "resource:///modules/zen/ZenMeetings.sys.mjs"
+    );
+    const calendarUrls = document.getElementById("zenMeetingsCalendarUrls");
+    const meetingsStatus = document.getElementById("zenMeetingsStatus");
+    calendarUrls.value = Services.prefs.getStringPref("zen.meetings.calendar-urls", "");
+    calendarUrls.addEventListener("change", () => {
+      Services.prefs.setStringPref("zen.meetings.calendar-urls", calendarUrls.value.trim());
+    });
+    let meetingsChanged = {
+      observe() {
+        const { calendars, failed, meetingsToday } = gZenMeetings.status;
+        meetingsStatus.hidden = !calendars;
+        if (failed) {
+          document.l10n.setAttributes(meetingsStatus, "zen-meetings-status-failed", { failed });
+        } else {
+          document.l10n.setAttributes(meetingsStatus, "zen-meetings-status", {
+            count: meetingsToday,
+          });
+        }
+      },
+    };
+    meetingsChanged.observe();
+    Services.obs.addObserver(meetingsChanged, "zen-meetings-changed");
+    gZenMeetings.init();
+
     Services.prefs.addObserver("zen.glance.enabled", tabsUnloaderPrefListener); // We can use the same listener for both prefs
     Services.prefs.addObserver("zen.workspaces.separate-essentials", tabsUnloaderPrefListener);
     Services.prefs.addObserver("zen.window-sync.sync-only-pinned-tabs", tabsUnloaderPrefListener);
@@ -773,6 +799,7 @@ var gZenWorkspacesSettings = {
     Services.prefs.addObserver("browser.ctrlTab.sortByRecentlyUsed", toggleZenCycleByAttrWarning);
     window.addEventListener("unload", () => {
       Services.prefs.removeObserver("zen.tabs.auto-archive.write-failed", tabArchiveWriteFailed);
+      Services.obs.removeObserver(meetingsChanged, "zen-meetings-changed");
       Services.prefs.removeObserver("zen.glance.enabled", tabsUnloaderPrefListener);
       Services.prefs.removeObserver("zen.workspaces.separate-essentials", tabsUnloaderPrefListener);
       Services.prefs.removeObserver(
@@ -816,6 +843,11 @@ Preferences.addAll([
     id: "zen.tabs.auto-archive.threshold-hours",
     type: "int",
     default: 12,
+  },
+  {
+    id: "zen.meetings.lead-minutes",
+    type: "int",
+    default: 5,
   },
   {
     id: "zen.pinned-tab-manager.close-shortcut-behavior",

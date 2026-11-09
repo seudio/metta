@@ -111,6 +111,36 @@
             hidden="true"/>
 </groupbox>
 
+<hbox id="zenMeetingsCategory"
+      class="subcategory"
+      hidden="true"
+      data-category="paneZenTabManagement">
+      <html:h1 data-l10n-id="pane-zen-meetings-title"/>
+</hbox>
+
+<groupbox id="zenMeetingsGroup" data-category="paneZenTabManagement" hidden="true" class="highlighting-group">
+      <label><html:h2 data-l10n-id="zen-meetings-header"/></label>
+      <description class="description-deemphasized" data-l10n-id="zen-meetings-description" />
+
+      <label data-l10n-id="zen-meetings-calendars-label" control="zenMeetingsCalendarUrls"/>
+      <html:textarea id="zenMeetingsCalendarUrls"
+            rows="3"
+            spellcheck="false"
+            data-l10n-id="zen-meetings-calendars-input"/>
+      <description id="zenMeetingsStatus" class="description-deemphasized" hidden="true"/>
+
+      <hbox align="center">
+            <label data-l10n-id="zen-meetings-lead-label" control="zenMeetingsLead"/>
+            <menulist id="zenMeetingsLead" preference="zen.meetings.lead-minutes">
+                  <menupopup>
+                        <menuitem data-l10n-id="zen-meetings-lead-1" value="1"/>
+                        <menuitem data-l10n-id="zen-meetings-lead-5" value="5"/>
+                        <menuitem data-l10n-id="zen-meetings-lead-10" value="10"/>
+                  </menupopup>
+            </menulist>
+      </hbox>
+</groupbox>
+
 </html:template>
 
 
