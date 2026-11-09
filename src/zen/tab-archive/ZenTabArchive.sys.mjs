@@ -124,6 +124,9 @@ class nsZenTabArchive {
         if (this.#sleptAt) {
           ZenTabArchiveStore.addPause(this.#sleptAt, Date.now());
           this.#sleptAt = 0;
+          // The sleep is accounted for, so the next pass must not take the
+          // long gap since the last one for a sleep nobody announced.
+          this.#touchLastAlive();
         }
         break;
       case "quit-application-granted":

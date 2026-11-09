@@ -77,6 +77,20 @@ add_task(async function test_paused_time_does_not_count() {
   ZenTabArchiveStore.clearPausesForTests();
 });
 
+add_task(async function test_overlapping_pauses_count_once() {
+  const now = Date.now();
+  // A sleep reported by the system, and the same sleep noticed again as a
+  // long gap between two passes.
+  ZenTabArchiveStore.addPause(now - 10 * HOUR, now - 2 * HOUR);
+  ZenTabArchiveStore.addPause(now - 11 * HOUR, now - HOUR);
+  is(
+    ZenTabArchiveStore.runningTimeSince(now - 20 * HOUR, now),
+    10 * HOUR,
+    "the ten hours both pauses cover are subtracted once"
+  );
+  ZenTabArchiveStore.clearPausesForTests();
+});
+
 add_task(async function test_a_change_during_upload_stays_dirty() {
   await ZenTabArchiveStore.addRecords([makeRecord("store-race")]);
   const sent = ZenTabArchiveStore.getDirty();

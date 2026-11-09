@@ -68,6 +68,27 @@ export function archiveLog(...args) {
   }
 }
 
+/**
+ * @param {number[][]} pauses - [start, end] gaps, in any order
+ * @returns {number[][]} The same time covered once, oldest first. Two gaps
+ *   that overlap would otherwise be subtracted twice from a tab's idle time.
+ */
+function mergePauses(pauses) {
+  const merged = [];
+  const valid = pauses.filter(
+    pause => Array.isArray(pause) && pause[1] > pause[0]
+  );
+  for (const [start, end] of valid.sort((a, b) => a[0] - b[0])) {
+    const last = merged.at(-1);
+    if (last && start <= last[1]) {
+      last[1] = Math.max(last[1], end);
+    } else {
+      merged.push([start, end]);
+    }
+  }
+  return merged;
+}
+
 function emptyData() {
   return {
     version: STORE_VERSION,
@@ -217,7 +238,7 @@ class nsZenTabArchiveStore {
         delete this.#data.dirty[id];
       }
     }
-    this.#data.pauses = this.#data.pauses
+    this.#data.pauses = mergePauses(this.#data.pauses)
       .filter(([, end]) => end >= cutoff)
       .slice(-MAX_PAUSES);
   }
@@ -299,12 +320,13 @@ class nsZenTabArchiveStore {
   async removeRecords(ids, { fromSync = false, discard = false } = {}) {
     await this.init();
     const removed = ids.filter(id => id in this.#data.records);
+    const wasRecord = new Set(removed);
     for (const id of ids) {
       delete this.#data.records[id];
       if (fromSync || (discard && id in this.#data.dirty)) {
         delete this.#data.tombstones[id];
         delete this.#data.dirty[id];
-      } else if (removed.includes(id)) {
+      } else if (wasRecord.has(id)) {
         this.#data.tombstones[id] = Date.now();
         this.#data.dirty[id] = Date.now();
       }
@@ -426,6 +448,14 @@ class nsZenTabArchiveStore {
   /** Forgets the remembered pauses. Used by tests. */
   clearPausesForTests() {
     this.#data.pauses = [];
+  }
+
+  /**
+   * @param {string} id
+   * @returns {boolean} Whether that record was restored or deleted here
+   */
+  hasTombstone(id) {
+    return id in this.#data.tombstones;
   }
 
   /** @returns {object} Tombstones with their deletion times */

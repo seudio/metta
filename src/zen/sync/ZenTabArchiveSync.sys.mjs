@@ -172,7 +172,7 @@ export class ZenTabArchiveSyncEngine extends SyncEngine {
   async _reconcile(item) {
     // A tab restored or deleted here stays gone: a record coming back for it
     // is from a device that has not heard yet, and loses to the tombstone.
-    if (!item.deleted && item.id in ZenTabArchiveStore.getTombstones()) {
+    if (!item.deleted && ZenTabArchiveStore.hasTombstone(item.id)) {
       return false;
     }
     // Otherwise what arrives wins. Records never change once written, so the
