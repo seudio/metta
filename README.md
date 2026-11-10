@@ -3,50 +3,60 @@
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/.
    -->
-<!-- TODO: Get a job -->
-<img src="./docs/assets/zen-dark.svg" width="100px" align="left">
+<img src="./configs/branding/metta/logo128.png" width="100px" align="left">
 
-### `Zen Browser`
+### `Metta`
 
-[![Downloads](https://img.shields.io/github/downloads/zen-browser/desktop/total.svg)](https://github.com/zen-browser/desktop/releases)
-[![Crowdin](https://badges.crowdin.net/zen-browser/localized.svg)](https://crowdin.com/project/zen-browser)
-[![Zen Release builds](https://github.com/zen-browser/desktop/actions/workflows/build.yml/badge.svg?branch=stable)](https://github.com/zen-browser/desktop/actions/workflows/build.yml)
+Metta is a personal build of [Zen Browser](https://github.com/zen-browser/desktop), which is itself based on Firefox. It tracks Zen and adds a few features on top. It is not affiliated with or supported by the Zen team; please do not report Metta problems to them.
 
-Zen is a firefox-based browser with the aim of pushing your productivity to a new level!
+<br clear="left">
 
-<div flex="true">
-  <a href="https://zen-browser.app/download">
-    Download
-  </a>
-  •
-  <a href="https://zen-browser.app">
-    Website
-  </a>
-  •
-  <a href="https://docs.zen-browser.app">
-    Documentation
-  </a>
-  •
-  <a href="https://zen-browser.app/release-notes/latest">
-    Release Notes
-  </a>
-</div>
+### What Metta adds
 
-### Firefox Versions
+- **Auto Archive** — tabs nobody has used for a while are unloaded, then closed and kept in an archive in the Library, from where they reopen in the space and container they came from. Spaces can opt out, and the archive syncs between devices.
+- **Join button for meetings** — give Metta the private iCal address of your calendars and a card appears in the sidebar shortly before a video meeting starts, with a button that opens the call.
+- **Its own name, icon and bundle id** (`app.zen-browser.metta`), so it installs next to Zen.
 
-- [`Release`](https://zen-browser.app/download) - Is currently built using Firefox version `158.0`!
-- [`Twilight`](https://zen-browser.app/download?twilight) - Is currently built using Firefox version `RC 158.0`!
+### Versions
 
-### Contributing
+Metta `1.24.1b` is built on Zen `1.24.1b` and Firefox `159.0.1`.
 
-If you'd like to report a bug, please do so on our [GitHub Issues page](https://github.com/zen-browser/desktop/issues/) and for feature requests, you can use [GitHub Discussions](https://github.com/zen-browser/desktop/discussions).
+### Branches
 
-Zen is an open-source project, and we welcome contributions from the community! Please take a look at the [contribution guidelines](./docs/contribute.md) before getting started!
+- `dev` — the default branch: Zen plus Metta's features and branding. Builds come from here.
+- `personal-build` — where the build is prepared; kept equal to `dev`.
+- `feature/auto-archive`, `feature/meeting-links` — each feature on its own, without the branding, on top of Zen.
 
-#### Partners
+Zen is the `upstream` remote (`https://github.com/zen-browser/desktop.git`). New Zen changes are merged from `upstream/dev` into the feature branches and then into `dev`.
 
-Thanks to all the [sponsors](https://zen-browser.app/#sponsors) of Zen for their support and contributions, including:
+### Building on macOS
 
-<a href="https://blacksmith.sh">
-  <img src="./docs/assets/blacksmith-yellow.png" width="350px"/>
-</a>
+```sh
+npm install
+npm run init                       # download Firefox, apply the patches, bootstrap
+npm run surfer -- set brand metta
+npm run build
+(cd engine && ./mach package)      # creates the DMG in engine/obj-*/dist
+```
+
+After merging from Zen, run `npm run import` again so new files are linked into `engine/`.
+
+To use the 1Password browser integration the app must be signed with a Developer ID certificate:
+
+```sh
+cd engine
+./mach macos-sign -a /path/to/a/copy/of/Metta.app \
+  -s "Developer ID Application: <name> (<team id>)" \
+  -e production-without-restricted -c release
+```
+
+Metta has no update server of its own. Turn updates off so it does not ask Zen's:
+
+```sh
+defaults write app.zen-browser.metta EnterprisePoliciesEnabled -bool TRUE
+defaults write app.zen-browser.metta DisableAppUpdate -bool TRUE
+```
+
+### License
+
+Metta is distributed under the [Mozilla Public License 2.0](./LICENSE), like Zen and Firefox. All credit for the browser itself goes to the [Zen](https://zen-browser.app) and Mozilla contributors.

@@ -1,6 +1,6 @@
 {
-  "name": "Zen Browser",
-  "vendor": "Zen OSS Team",
+  "name": "Metta",
+  "vendor": "seudio",
   "appId": "zen",
   "binaryName": "zen",
   "version": {
@@ -14,38 +14,6 @@
   },
   "addons": {},
   "brands": {
-    "release": {
-      "backgroundColor": "#282A33",
-      "brandShorterName": "Zen",
-      "brandShortName": "Zen",
-      "brandFullName": "Zen Browser",
-      "release": {
-        "displayVersion": "1.24.1b",
-        "github": {
-          "repo": "zen-browser/desktop"
-        },
-        "archives": {
-          "windows": "windows.mar",
-          "macos-aarch64": "macos-aarch64.mar",
-          "linux": "linux.mar",
-          "macos-x64": "macos-x64.mar",
-          "windows-arm64": "windows-arm64.mar",
-          "linux-aarch64": "linux-aarch64.mar"
-        }
-      }
-    },
-    "twilight": {
-      "backgroundColor": "#282A33",
-      "brandShorterName": "Zen",
-      "brandShortName": "Twilight",
-      "brandFullName": "Zen Twilight",
-      "release": {
-        "displayVersion": "1.25t",
-        "github": {
-          "repo": "zen-browser/desktop"
-        }
-      }
-    },
     "metta": {
       "backgroundColor": "#282A33",
       "brandShorterName": "Metta",
@@ -54,7 +22,7 @@
       "release": {
         "displayVersion": "1.24.1b",
         "github": {
-          "repo": "seudio/zen-desktop"
+          "repo": "seudio/metta"
         }
       }
     }
