@@ -19,7 +19,7 @@ Metta is a personal build of [Zen Browser](https://github.com/zen-browser/deskto
 
 ### Versions
 
-Metta `1.24.1b` is built on Zen `1.24.1b` and Firefox `159.0.1`.
+Metta `1.24.2b` is built on Zen `1.24.2b` and Firefox `160.0`.
 
 ### Branches
 
@@ -27,7 +27,7 @@ Metta `1.24.1b` is built on Zen `1.24.1b` and Firefox `159.0.1`.
 - `personal-build` — where the build is prepared; kept equal to `dev`.
 - `feature/auto-archive`, `feature/meeting-links` — each feature on its own, without the branding, on top of Zen.
 
-Zen is the `upstream` remote (`https://github.com/zen-browser/desktop.git`). New Zen changes are merged from `upstream/dev` into the feature branches and then into `dev`.
+Zen is the `upstream` remote (`https://github.com/zen-browser/desktop.git`). New Zen releases are merged into `dev` from their release tag.
 
 ### Building on macOS
 
