@@ -70,11 +70,15 @@
         height: 8px;
         background: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
         border-radius: 50%;
+        transition:
+          width 0.2s,
+          height 0.2s,
+          background-color 0.2s;
       }
     }
 
     filter: grayscale(1);
-    opacity: 0.7;
+    opacity: 0.5;
     transition:
       filter 0.2s,
       opacity 0.2s,
@@ -91,6 +95,18 @@
     &[dragged='true'] {
       filter: grayscale(0);
       opacity: 1;
+    }
+
+    /* The selected space is marked by more than its brightness: it sits on
+     * a pill, and a space without an icon gets a larger, solid dot. */
+    &[active='true'] {
+      background-color: var(--zen-toolbar-element-bg);
+
+      & .zen-workspace-icon[no-icon='true'] {
+        width: 10px;
+        height: 10px;
+        background: currentColor;
+      }
     }
 
     &:hover,
