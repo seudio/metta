@@ -15,6 +15,7 @@ Metta is a personal build of [Zen Browser](https://github.com/zen-browser/deskto
 
 - **Auto Archive** — tabs nobody has used for a while are unloaded, then closed and kept in an archive in the Library, from where they reopen in the space and container they came from. Spaces can opt out, and the archive syncs between devices.
 - **Join button for meetings** — give Metta the private iCal address of your calendars and a card appears in the sidebar shortly before a video meeting starts, with a button that opens the call.
+- **Security fix watch** — Metta does not update itself, so a few times a day it checks Mozilla's security advisories for fixes that newer Firefox releases have and it lacks. A missing fix rated high or critical is asked about once, three days after it comes out. A missing fix for a vulnerability already used in attacks (per the advisory or CISA's Known Exploited Vulnerabilities catalog) pauses web browsing until you approve, once per session. It is under Settings, Tab Management, Security fixes.
 - **Its own name, icon and bundle id** (`app.zen-browser.metta`), so it installs next to Zen.
 
 ### Versions
@@ -26,6 +27,7 @@ Metta `1.24.2b` is built on Zen `1.24.2b` and Firefox `160.0`.
 - `dev` — the default branch: Zen plus Metta's features and branding. Builds come from here.
 - `personal-build` — where the build is prepared; kept equal to `dev`.
 - `feature/auto-archive`, `feature/meeting-links` — each feature on its own, without the branding, on top of Zen.
+- `feature/security-watch` — the security fix watch, on top of `dev`.
 
 Zen is the `upstream` remote (`https://github.com/zen-browser/desktop.git`). New Zen releases are merged into `dev` from their release tag.
 
@@ -35,11 +37,12 @@ Zen is the `upstream` remote (`https://github.com/zen-browser/desktop.git`). New
 npm install
 npm run init                       # download Firefox, apply the patches, bootstrap
 npm run surfer -- set brand metta
+python3 scripts/update_en_US_packs.py   # copy Zen's and Metta's English text into engine/
 npm run build
 (cd engine && ./mach package)      # creates the DMG in engine/obj-*/dist
 ```
 
-After merging from Zen, run `npm run import` again so new files are linked into `engine/`.
+After merging from Zen, run `npm run import` again so new files are linked into `engine/`. After downloading a new Firefox, or changing anything in `locales/`, run `python3 scripts/update_en_US_packs.py` again: without it the build succeeds but every Zen and Metta label is blank.
 
 To use the 1Password browser integration the app must be signed with a Developer ID certificate:
 

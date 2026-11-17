@@ -168,6 +168,30 @@ zen-appmenu-new-blank-window =
     .label = New Blank Window
 
 
+zen-security-block-title = Browsing is paused
+# $current (String) - The Firefox version this build is based on
+# $latest (String) - The newest Firefox version with security fixes
+zen-security-block-summary = This build is based on Firefox { $current }. Firefox { $latest } fixes a vulnerability that is already being used in attacks, and this build does not have the fix yet.
+zen-security-block-advice = Web pages stay closed until you update, or choose to continue without the fix. Settings and other built-in pages still work.
+zen-security-block-continue =
+    .label = Continue for This Session
+zen-security-prompt-title = Security fixes are missing
+# $current (String) - The Firefox version this build is based on
+# $latest (String) - The newest Firefox version with security fixes
+zen-security-prompt-intro = This build is based on Firefox { $current }. Firefox { $latest } is out, and fixes vulnerabilities that this build still has:
+# $version (String) - The Firefox version with the fixes
+# $level (String) - How serious the worst of them is: high or critical
+# $count (Number) - How many of the fixes are rated high or critical
+zen-security-prompt-item =
+    { $count ->
+        [0] Firefox { $version }: rated { $level }
+        [one] Firefox { $version }: 1 fix rated { $level }
+       *[other] Firefox { $version }: { $count } fixes rated high or critical
+    }
+zen-security-prompt-advice = None of them is known to be used in attacks. Update when you can.
+zen-security-prompt-continue = Continue
+zen-security-prompt-later = Remind Me Tomorrow
+
 zen-meeting-join =
     .label = Join
 zen-meeting-dismiss =

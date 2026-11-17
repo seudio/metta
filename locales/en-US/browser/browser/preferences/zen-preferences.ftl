@@ -184,6 +184,31 @@ zen-meetings-lead-5 =
 zen-meetings-lead-10 =
     .label = 10 minutes before
 
+pane-zen-security-watch-title = Security fixes
+zen-security-watch-header = Warn when security fixes are missing
+zen-security-watch-description = This build does not update itself. A few times a day it checks Mozilla’s security advisories for fixes that newer Firefox releases have and it lacks, and asks before you carry on without a serious one.
+zen-security-watch-enabled =
+    .label = Check for missing security fixes
+zen-security-watch-block-exploited =
+    .label = Pause browsing while a fix for a vulnerability used in attacks is missing
+zen-security-watch-check-now =
+    .label = Check Now
+zen-security-watch-status-unchecked =
+    .value = Not checked yet
+zen-security-watch-status-failed =
+    .value = The last check could not reach the advisories
+# $current (String) - The Firefox version this build is based on
+# $time (Date) - When the last check ran
+zen-security-watch-status-current =
+    .value = No fixes missing for Firefox { $current } · checked { DATETIME($time, dateStyle: "medium", timeStyle: "short") }
+# $current (String) - The Firefox version this build is based on
+# $latest (String) - The newest Firefox version with security fixes
+# $time (Date) - When the last check ran
+zen-security-watch-status-behind =
+    .value = Based on Firefox { $current }; fixes in Firefox { $latest } are missing · checked { DATETIME($time, dateStyle: "medium", timeStyle: "short") }
+zen-security-watch-status-exploited =
+    .value = Based on Firefox { $current }; Firefox { $latest } fixes a vulnerability used in attacks · checked { DATETIME($time, dateStyle: "medium", timeStyle: "short") }
+
 zen-settings-workspaces-header = General settings for workspaces
 zen-settings-workspaces-description = With workspaces, you can have multiple browsing sessions at once!
 zen-settings-workspaces-enabled =

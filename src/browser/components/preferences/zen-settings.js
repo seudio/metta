@@ -789,6 +789,45 @@ var gZenWorkspacesSettings = {
     Services.obs.addObserver(meetingsChanged, "zen-meetings-changed");
     gZenMeetings.init();
 
+    const { gZenSecurityWatch } = ChromeUtils.importESModule(
+      "resource:///modules/zen/ZenSecurityWatch.sys.mjs"
+    );
+    const securityStatus = document.getElementById("zenSecurityWatchStatus");
+    let securityChanged = {
+      observe() {
+        const { enabled, current, latest, action, missing, checkedAt, error } =
+          gZenSecurityWatch.status;
+        document.getElementById("zenSecurityWatchBlock").disabled = !enabled;
+        document.getElementById("zenSecurityWatchCheckNow").disabled = !enabled;
+        securityStatus.hidden = !enabled;
+        if (!checkedAt) {
+          document.l10n.setAttributes(
+            securityStatus,
+            error ? "zen-security-watch-status-failed" : "zen-security-watch-status-unchecked"
+          );
+        } else if (!missing) {
+          document.l10n.setAttributes(securityStatus, "zen-security-watch-status-current", {
+            current,
+            time: checkedAt,
+          });
+        } else {
+          document.l10n.setAttributes(
+            securityStatus,
+            action === "block"
+              ? "zen-security-watch-status-exploited"
+              : "zen-security-watch-status-behind",
+            { current, latest, time: checkedAt }
+          );
+        }
+      },
+    };
+    securityChanged.observe();
+    Services.obs.addObserver(securityChanged, "zen-security-watch-changed");
+    document.getElementById("zenSecurityWatchCheckNow").addEventListener("command", () => {
+      gZenSecurityWatch.check().catch(console.error);
+    });
+    gZenSecurityWatch.init();
+
     Services.prefs.addObserver("zen.glance.enabled", tabsUnloaderPrefListener); // We can use the same listener for both prefs
     Services.prefs.addObserver("zen.workspaces.separate-essentials", tabsUnloaderPrefListener);
     Services.prefs.addObserver("zen.window-sync.sync-only-pinned-tabs", tabsUnloaderPrefListener);
@@ -800,6 +839,7 @@ var gZenWorkspacesSettings = {
     window.addEventListener("unload", () => {
       Services.prefs.removeObserver("zen.tabs.auto-archive.write-failed", tabArchiveWriteFailed);
       Services.obs.removeObserver(meetingsChanged, "zen-meetings-changed");
+      Services.obs.removeObserver(securityChanged, "zen-security-watch-changed");
       Services.prefs.removeObserver("zen.glance.enabled", tabsUnloaderPrefListener);
       Services.prefs.removeObserver("zen.workspaces.separate-essentials", tabsUnloaderPrefListener);
       Services.prefs.removeObserver(
@@ -848,6 +888,16 @@ Preferences.addAll([
     id: "zen.meetings.lead-minutes",
     type: "int",
     default: 5,
+  },
+  {
+    id: "zen.security-watch.enabled",
+    type: "bool",
+    default: true,
+  },
+  {
+    id: "zen.security-watch.block-exploited",
+    type: "bool",
+    default: true,
   },
   {
     id: "zen.pinned-tab-manager.close-shortcut-behavior",

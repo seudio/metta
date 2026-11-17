@@ -1,0 +1,25 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# Check whether Firefox has released security fixes this build lacks.
+- name: zen.security-watch.enabled
+  value: true
+
+# Hold web pages back while a fix for a bug used in attacks is missing.
+# When off, such a bug is asked about like any other serious one.
+- name: zen.security-watch.block-exploited
+  value: true
+
+- name: zen.security-watch.check-hours
+  value: 6
+
+# Days a serious fix may be out before its absence is asked about, to give
+# the next build time to arrive. Bugs used in attacks get no grace.
+- name: zen.security-watch.grace-days
+  value: 3
+
+# Pretend to be built on this Firefox version, to see what an older build
+# would be told.
+- name: zen.security-watch.version-override
+  value: ""

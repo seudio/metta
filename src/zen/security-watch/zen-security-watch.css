@@ -1,0 +1,55 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#zen-security-block {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: 24px;
+  border-radius: var(--zen-native-inner-radius, 0);
+  background-color: -moz-Dialog;
+  color: -moz-DialogText;
+
+  &[hidden] {
+    display: none;
+  }
+
+  .zen-security-block-box {
+    gap: 4px;
+    max-width: 520px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .zen-security-block-icon {
+    width: 32px;
+    height: 32px;
+    list-style-image: url("chrome://global/skin/icons/warning.svg");
+    -moz-context-properties: fill;
+    fill: #e2850c;
+  }
+
+  h1 {
+    margin: 12px 0 0;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 8px 0 0;
+  }
+
+  ul {
+    margin: 8px 0 0;
+    padding-inline-start: 20px;
+    font-size: 13px;
+    user-select: text;
+  }
+
+  .zen-security-block-continue {
+    margin: 20px 0 0;
+  }
+}

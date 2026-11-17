@@ -141,6 +141,30 @@
       </hbox>
 </groupbox>
 
+<hbox id="zenSecurityWatchCategory"
+      class="subcategory"
+      hidden="true"
+      data-category="paneZenTabManagement">
+      <html:h1 data-l10n-id="pane-zen-security-watch-title"/>
+</hbox>
+
+<groupbox id="zenSecurityWatchGroup" data-category="paneZenTabManagement" hidden="true" class="highlighting-group">
+      <label><html:h2 data-l10n-id="zen-security-watch-header"/></label>
+      <description class="description-deemphasized" data-l10n-id="zen-security-watch-description" />
+
+      <checkbox id="zenSecurityWatchEnabled"
+                data-l10n-id="zen-security-watch-enabled"
+                preference="zen.security-watch.enabled"/>
+      <checkbox id="zenSecurityWatchBlock"
+                data-l10n-id="zen-security-watch-block-exploited"
+                preference="zen.security-watch.block-exploited"/>
+
+      <hbox align="center">
+            <button id="zenSecurityWatchCheckNow" data-l10n-id="zen-security-watch-check-now"/>
+            <label id="zenSecurityWatchStatus" class="description-deemphasized"/>
+      </hbox>
+</groupbox>
+
 </html:template>
 
 
