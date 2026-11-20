@@ -30,6 +30,9 @@ the GitHub release and on [seud.io/metta/releases](https://seud.io/metta/release
 - **What's new opens Metta's release notes.** The page that opens the first
   time a new build starts, and the release notes links in the sidebar notice
   and the About window, now go to Metta's notes instead of Zen's.
+- The green dot that Zen's test builds show under an Essential whose title
+  starts with a count, such as "(1) Home / X", is off, as it is in released
+  Zen. To turn it on, set `zen.theme.essentials-unread-dot` in `about:config`.
 - While browsing is paused for an attacked vulnerability, the pages needed to
   download the newer build still load.
 - Everything new in Zen 1.24.3b, including Little Zen windows, the settings
