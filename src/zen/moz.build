@@ -18,6 +18,7 @@ DIRS += [
     "live-folders",
     "media",
     "meetings",
+    "metta",
     "migration",
     "mods",
     "security-watch",
