@@ -91,6 +91,7 @@ async function useFeeds({
   advisory,
   knownExploited = [],
   graceDays = 0,
+  release = null,
 }) {
   await SpecialPowers.pushPrefEnv({
     set: [
@@ -104,6 +105,11 @@ async function useFeeds({
       [
         "zen.security-watch.advisory-url",
         dataUrl("text/html", makeAdvisoryPage(advisory)),
+      ],
+      // No newer build is announced unless a test says so.
+      [
+        "zen.security-watch.release-url",
+        dataUrl("application/json", JSON.stringify(release ?? {})),
       ],
       [
         "zen.security-watch.exploited-url",

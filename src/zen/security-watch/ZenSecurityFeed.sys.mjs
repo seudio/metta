@@ -251,3 +251,50 @@ export function assess({
   }
   return { action, level, advisories: marked, exploited: [...exploited] };
 }
+
+/**
+ * Reads the note that says which build of this browser is the newest.
+ *
+ * @param {string|object} note - JSON: { version, firefox, url }
+ * @returns {?{version: string, firefox: string, url: string}} Null when
+ *   the note is not usable
+ */
+export function parseRelease(note) {
+  let data;
+  try {
+    data = typeof note === "string" ? JSON.parse(note) : note;
+  } catch {
+    return null;
+  }
+  const { version, firefox, url } = data ?? {};
+  if (
+    !/^[\w.-]{1,32}$/.test(version ?? "") ||
+    !/^\d+(\.\d+){0,3}$/.test(firefox ?? "") ||
+    !/^https:\/\/[^\s]+$/.test(url ?? "")
+  ) {
+    return null;
+  }
+  return { version, firefox, url };
+}
+
+/**
+ * Says how far the newest build goes towards the fixes this one is missing.
+ *
+ * @param {?{firefox: string}} release - From parseRelease
+ * @param {string} current - The Firefox version this build is based on
+ * @param {string} latest - The newest Firefox version with security fixes
+ * @returns {"available"|"partial"|"pending"|"unknown"} "available" when the
+ *   newest build has every fix, "partial" when it has some of them,
+ *   "pending" when no newer build is out, "unknown" without a release
+ */
+export function releaseStatus(release, current, latest) {
+  if (!release) {
+    return "unknown";
+  }
+  if (compareVersions(release.firefox, current) <= 0) {
+    return "pending";
+  }
+  return compareVersions(release.firefox, latest) >= 0
+    ? "available"
+    : "partial";
+}

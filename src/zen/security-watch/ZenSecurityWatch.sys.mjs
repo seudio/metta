@@ -20,13 +20,15 @@ ChromeUtils.defineESModuleGetters(lazy, {
   parseAdvisory: "resource:///modules/zen/ZenSecurityFeed.sys.mjs",
   parseKnownExploited: "resource:///modules/zen/ZenSecurityFeed.sys.mjs",
   parseKnownVulnerabilities: "resource:///modules/zen/ZenSecurityFeed.sys.mjs",
+  parseRelease: "resource:///modules/zen/ZenSecurityFeed.sys.mjs",
+  releaseStatus: "resource:///modules/zen/ZenSecurityFeed.sys.mjs",
   releasesAfter: "resource:///modules/zen/ZenSecurityFeed.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(
   lazy,
   "l10n",
-  () => new Localization(["browser/zen-general.ftl"], true)
+  () => new Localization(["branding/brand.ftl", "browser/zen-general.ftl"], true)
 );
 
 const PREF = "zen.security-watch.";
@@ -68,9 +70,16 @@ XPCOMUtils.defineLazyPreferenceGetter(
   `${PREF}exploited-url`,
   "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
 );
+XPCOMUtils.defineLazyPreferenceGetter(
+  lazy,
+  "RELEASE_URL",
+  `${PREF}release-url`,
+  "https://seud.io/metta/latest.json"
+);
 
 const STATE_PREF = `${PREF}state`;
 const ACKNOWLEDGED_PREF = `${PREF}acknowledged`;
+const OFFERED_PREF = `${PREF}offered`;
 const VERSION_OVERRIDE_PREF = `${PREF}version-override`;
 const CHANGED_TOPIC = "zen-security-watch-changed";
 
@@ -84,6 +93,8 @@ const MAX_PAGE_BYTES = 20 * 1024 * 1024;
 const MAX_ADVISORIES = 12;
 
 const SERIOUS = ["high", "critical"];
+// Where a newer build is downloaded from, which has to work during a block.
+const DOWNLOAD_HOSTS = /^(github\.com|[\w-]+\.githubusercontent\.com)$/;
 
 /**
  * Watches for security fixes that Firefox has released and this build does
@@ -119,20 +130,26 @@ class nsZenSecurityWatch {
    * @param {Window} window
    * @param {string} title
    * @param {string} body
-   * @param {string[]} buttons - Two labels
+   * @param {string[]} buttons - Two or three labels. The first is the
+   *   default, the second is what closing the prompt chooses.
    * @returns {number} The index of the button chosen
    */
   confirm(window, title, body, buttons) {
     const { prompt } = Services;
+    let flags =
+      prompt.BUTTON_POS_0 * prompt.BUTTON_TITLE_IS_STRING +
+      prompt.BUTTON_POS_1 * prompt.BUTTON_TITLE_IS_STRING;
+    if (buttons[2]) {
+      flags += prompt.BUTTON_POS_2 * prompt.BUTTON_TITLE_IS_STRING;
+    }
     return prompt.confirmEx(
       window,
       title,
       body,
-      prompt.BUTTON_POS_0 * prompt.BUTTON_TITLE_IS_STRING +
-        prompt.BUTTON_POS_1 * prompt.BUTTON_TITLE_IS_STRING,
+      flags,
       buttons[0],
       buttons[1],
-      null,
+      buttons[2] ?? null,
       null,
       {}
     );
@@ -173,17 +190,24 @@ class nsZenSecurityWatch {
         this.#onRequest(subject);
         break;
       case "nsPref:changed":
-        if (data === STATE_PREF || data === ACKNOWLEDGED_PREF) {
+        if (
+          data === STATE_PREF ||
+          data === ACKNOWLEDGED_PREF ||
+          data === OFFERED_PREF
+        ) {
           break;
         }
-        if (data === VERSION_OVERRIDE_PREF || data.endsWith("-url")) {
-          this.#state = null;
-        }
-        this.#schedule();
-        this.#apply();
-        if (data !== `${PREF}block-exploited`) {
-          this.check().catch(console.error);
-        }
+        // Once every observer has run, so the cached values are current.
+        Services.tm.dispatchToMainThread(() => {
+          if (data === VERSION_OVERRIDE_PREF || data.endsWith("-url")) {
+            this.#state = null;
+          }
+          this.#schedule();
+          this.#apply();
+          if (data !== `${PREF}block-exploited`) {
+            this.check().catch(console.error);
+          }
+        });
         break;
       case "wake_notification":
         this.#checkIfStale();
@@ -311,6 +335,18 @@ class nsZenSecurityWatch {
         }
       }
 
+      // Whether a newer build of this browser has the fixes. Not knowing
+      // changes what is said, not what is done.
+      let release = null;
+      if (advisories.length) {
+        try {
+          release = lazy.parseRelease(
+            await this.#fetchText(lazy.RELEASE_URL)
+          );
+        } catch {}
+      }
+      const latest = releases.at(-1)?.version ?? version;
+
       const result = lazy.assess({
         advisories,
         knownExploited,
@@ -326,7 +362,11 @@ class nsZenSecurityWatch {
         checkedAt: this.now(),
         action: result.action,
         level: result.level,
-        latest: releases.at(-1)?.version ?? version,
+        latest,
+        release: release && {
+          ...release,
+          status: lazy.releaseStatus(release, version, latest),
+        },
         exploited: result.exploited,
         advisories: result.advisories.map(advisory => ({
           id: advisory.id,
@@ -374,7 +414,7 @@ class nsZenSecurityWatch {
    * For the settings page.
    *
    * @returns {object} { enabled, current, latest, action, level, missing,
-   *   checkedAt, error }
+   *   checkedAt, error, release }
    */
   get status() {
     return {
@@ -386,7 +426,50 @@ class nsZenSecurityWatch {
       missing: this.#state?.advisories.length ?? 0,
       checkedAt: this.#state?.checkedAt ?? 0,
       error: this.#lastError,
+      release: this.#state?.advisories.length ? this.update : null,
     };
+  }
+
+  /**
+   * The newest build of this browser, when it has fixes this one lacks.
+   *
+   * @returns {?{version: string, firefox: string, url: string,
+   *   status: "available"|"partial"}}
+   */
+  get update() {
+    const release = this.#state?.release;
+    return ["available", "partial"].includes(release?.status) ? release : null;
+  }
+
+  /**
+   * @param {nsIURI} uri
+   * @returns {boolean} Whether this address is part of getting the newer
+   *   build, and so loads even while browsing is paused
+   */
+  isUpdateAddress(uri) {
+    const update = this.update;
+    if (!update || !uri?.schemeIs("https")) {
+      return false;
+    }
+    try {
+      return (
+        uri.host === new URL(update.url).host || DOWNLOAD_HOSTS.test(uri.host)
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  /** Opens the page the newer build is downloaded from. */
+  openUpdatePage() {
+    const update = this.update;
+    const window = lazy.BrowserWindowTracker.getTopWindow();
+    if (!update || !window) {
+      return;
+    }
+    Services.prefs.setStringPref(OFFERED_PREF, update.version);
+    window.focus();
+    window.openTrustedLinkIn(update.url, "tab");
   }
 
   /**
@@ -458,6 +541,9 @@ class nsZenSecurityWatch {
     }
     try {
       const channel = subject.QueryInterface(Ci.nsIHttpChannel);
+      if (this.isUpdateAddress(channel.URI)) {
+        return;
+      }
       const { loadInfo } = channel;
       const context =
         loadInfo.targetBrowsingContext ?? loadInfo.browsingContext;
@@ -493,12 +579,19 @@ class nsZenSecurityWatch {
     if (!state || !["prompt", "block"].includes(state.action)) {
       return [];
     }
-    const acknowledged = this.#acknowledged;
-    return state.advisories.filter(
-      advisory =>
-        (SERIOUS.includes(advisory.level) || advisory.exploited.length) &&
-        !acknowledged.has(advisory.id)
+    const serious = state.advisories.filter(
+      advisory => SERIOUS.includes(advisory.level) || advisory.exploited.length
     );
+    // A newer build that has just come out is news about all of them.
+    const update = this.update;
+    if (
+      update &&
+      update.version !== Services.prefs.getStringPref(OFFERED_PREF, "")
+    ) {
+      return serious;
+    }
+    const acknowledged = this.#acknowledged;
+    return serious.filter(advisory => !acknowledged.has(advisory.id));
   }
 
   /** Asks, in the frontmost window, about fixes not asked about before. */
@@ -530,7 +623,9 @@ class nsZenSecurityWatch {
     if (!advisories.length || this.blocking || !window) {
       return;
     }
-    const { version, latest } = this.#state;
+    const { version, latest, release } = this.#state;
+    const update = this.update;
+    const exploited = advisories.some(advisory => advisory.exploited.length);
     const format = (id, args) => lazy.l10n.formatValueSync(id, args);
     const list = advisories
       .map(advisory =>
@@ -547,14 +642,34 @@ class nsZenSecurityWatch {
       [
         format("zen-security-prompt-intro", { current: version, latest }),
         list,
-        format("zen-security-prompt-advice"),
+        format(
+          exploited
+            ? "zen-security-prompt-risk-exploited"
+            : "zen-security-prompt-risk"
+        ),
+        format(`zen-security-release-${release?.status ?? "unknown"}`, {
+          metta: release?.version ?? "",
+          firefox: release?.firefox ?? "",
+        }),
       ].join("\n\n"),
-      [
-        format("zen-security-prompt-continue"),
-        format("zen-security-prompt-later"),
-      ]
+      update
+        ? [
+            format("zen-security-prompt-update"),
+            format("zen-security-prompt-later"),
+            format("zen-security-prompt-continue"),
+          ]
+        : [
+            format("zen-security-prompt-continue"),
+            format("zen-security-prompt-later"),
+          ]
     );
-    if (choice === 0) {
+    if (update && choice === 0) {
+      this.openUpdatePage();
+    }
+    if (update ? choice !== 1 : choice === 0) {
+      if (update) {
+        Services.prefs.setStringPref(OFFERED_PREF, update.version);
+      }
       const acknowledged = this.#acknowledged;
       // Forget the ones this build no longer lacks.
       const current = new Set(
@@ -579,6 +694,7 @@ class nsZenSecurityWatch {
     this.#lastError = null;
     Services.prefs.clearUserPref(STATE_PREF);
     Services.prefs.clearUserPref(ACKNOWLEDGED_PREF);
+    Services.prefs.clearUserPref(OFFERED_PREF);
     delete this.now;
     delete this.confirm;
     this.#apply();
@@ -647,9 +763,12 @@ export class ZenSecurityBlock extends ZenUIComponent {
           <html:p class="zen-security-block-summary"/>
           <html:ul class="zen-security-block-list"/>
           <html:p data-l10n-id="zen-security-block-advice"/>
+          <html:p class="zen-security-block-release"/>
           <hbox pack="end">
             <button class="zen-security-block-continue"
                     data-l10n-id="zen-security-block-continue"/>
+            <button class="zen-security-block-update primary" default="true"
+                    data-l10n-id="zen-security-block-update"/>
           </hbox>
         </vbox>
       </vbox>
@@ -658,6 +777,9 @@ export class ZenSecurityBlock extends ZenUIComponent {
     element
       .querySelector(".zen-security-block-continue")
       .addEventListener("command", () => gZenSecurityWatch.approve());
+    element
+      .querySelector(".zen-security-block-update")
+      .addEventListener("command", () => gZenSecurityWatch.openUpdatePage());
     return element;
   }
 
@@ -670,14 +792,23 @@ export class ZenSecurityBlock extends ZenUIComponent {
       !!browser &&
       (gZenSecurityWatch.isHeld(browser) ||
         uri?.schemeIs("http") ||
-        uri?.schemeIs("https"));
+        uri?.schemeIs("https")) &&
+      !gZenSecurityWatch.isUpdateAddress(uri);
     this.#element.hidden = !show;
     // Keep the keyboard out of the page underneath as well.
     gBrowser.tabpanels.toggleAttribute("inert", show);
     if (!show) {
       return;
     }
-    const { version, latest, advisories } = gZenSecurityWatch.state;
+    const { version, latest, advisories, release } = gZenSecurityWatch.state;
+    const note = this.#element.querySelector(".zen-security-block-release");
+    this.document.l10n.setAttributes(
+      note,
+      `zen-security-release-${release?.status ?? "unknown"}`,
+      { metta: release?.version ?? "", firefox: release?.firefox ?? "" }
+    );
+    this.#element.querySelector(".zen-security-block-update").hidden =
+      !gZenSecurityWatch.update;
     this.document.l10n.setAttributes(
       this.#element.querySelector(".zen-security-block-summary"),
       "zen-security-block-summary",

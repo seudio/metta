@@ -23,3 +23,8 @@
 # would be told.
 - name: zen.security-watch.version-override
   value: ""
+
+# Where the newest build of this browser is announced, as JSON:
+# { "version": "1.24.3b", "firefox": "160.0.1", "url": "https://…" }
+- name: zen.security-watch.release-url
+  value: "https://seud.io/metta/latest.json"

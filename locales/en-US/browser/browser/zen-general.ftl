@@ -193,7 +193,9 @@ zen-security-block-title = Browsing is paused
 # $current (String) - The Firefox version this build is based on
 # $latest (String) - The newest Firefox version with security fixes
 zen-security-block-summary = This build is based on Firefox { $current }. Firefox { $latest } fixes a vulnerability that is already being used in attacks, and this build does not have the fix yet.
-zen-security-block-advice = Web pages stay closed until you update, or choose to continue without the fix. Settings and other built-in pages still work.
+zen-security-block-advice = Browsing is dangerous until this is fixed: a web page could use the vulnerability just by being opened. Web pages stay closed until you update, or choose to continue without the fix. Settings and other built-in pages still work.
+zen-security-block-update =
+    .label = Get the Update
 zen-security-block-continue =
     .label = Continue for This Session
 zen-security-prompt-title = Security fixes are missing
@@ -209,7 +211,15 @@ zen-security-prompt-item =
         [one] Firefox { $version }: 1 fix rated { $level }
        *[other] Firefox { $version }: { $count } fixes rated high or critical
     }
-zen-security-prompt-advice = None of them is known to be used in attacks. Update when you can.
+zen-security-prompt-risk = None of them is known to be used in attacks, so browsing is not dangerous yet. The risk grows the longer a fix has been public: until you update, be careful with links and sites you do not know.
+zen-security-prompt-risk-exploited = At least one of them is being used in attacks now. Browsing is dangerous until you update: a web page could use it just by being opened. Keep to sites you trust.
+zen-security-prompt-update = Get the Update
+# $metta (String) - The version of the newest build of this browser
+# $firefox (String) - The Firefox version that build is based on
+zen-security-release-available = { -brand-short-name } { $metta } is out and has these fixes.
+zen-security-release-partial = { -brand-short-name } { $metta } is out. It is based on Firefox { $firefox }, so it has some of these fixes but not all.
+zen-security-release-pending = There is no { -brand-short-name } build with these fixes yet. One is pending, and you will be told when it is out.
+zen-security-release-unknown = Whether a newer { -brand-short-name } build is out could not be checked.
 zen-security-prompt-continue = Continue
 zen-security-prompt-later = Remind Me Tomorrow
 
