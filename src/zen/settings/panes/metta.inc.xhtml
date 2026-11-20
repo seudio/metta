@@ -1,0 +1,91 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+        <html:section id="zen-settings-pane-metta" class="zen-settings-pane" role="tabpanel" data-pane="metta" hidden="hidden">
+          <html:div class="zen-settings-group">
+            <html:h2 data-l10n-id="metta-settings-archive-header"/>
+            <html:div class="zen-settings-card">
+              <html:div class="zen-settings-row">
+                <html:span class="zen-settings-row-text">
+                  <html:span id="metta-settings-archive-threshold-label" data-l10n-id="metta-settings-archive-threshold"/>
+                  <html:span class="zen-settings-row-description" data-l10n-id="metta-settings-archive-description"/>
+                </html:span>
+                <menulist id="metta-settings-archive-threshold" data-pref="zen.tabs.auto-archive.threshold-hours" aria-labelledby="metta-settings-archive-threshold-label">
+                  <menupopup>
+                    <menuitem value="12" data-l10n-id="metta-settings-archive-threshold-12-hours"/>
+                    <menuitem value="24" data-l10n-id="metta-settings-archive-threshold-24-hours"/>
+                    <menuitem value="168" data-l10n-id="metta-settings-archive-threshold-7-days"/>
+                    <menuitem value="720" data-l10n-id="metta-settings-archive-threshold-30-days"/>
+                    <menuitem value="0" data-l10n-id="metta-settings-archive-threshold-never"/>
+                  </menupopup>
+                </menulist>
+              </html:div>
+              <html:div class="zen-settings-row">
+                <html:span class="zen-settings-row-text">
+                  <html:span data-l10n-id="metta-settings-archive-now"/>
+                  <html:span id="metta-settings-archive-now-result" class="zen-settings-row-description" hidden="hidden"/>
+                </html:span>
+                <html:button id="metta-settings-archive-now-button" class="zen-settings-button" data-l10n-id="metta-settings-archive-now-button"/>
+              </html:div>
+              <html:div id="metta-settings-archive-write-failed" class="zen-settings-row" hidden="hidden">
+                <html:span class="zen-settings-status" data-state="warning">
+                  <html:span class="zen-settings-status-dot"/>
+                  <html:span data-l10n-id="metta-settings-archive-write-failed"/>
+                </html:span>
+              </html:div>
+            </html:div>
+          </html:div>
+
+          <html:div class="zen-settings-group">
+            <html:h2 data-l10n-id="metta-settings-meetings-header"/>
+            <html:div class="zen-settings-card">
+              <html:div class="zen-settings-row metta-settings-stacked-row">
+                <html:span class="zen-settings-row-text">
+                  <html:label for="metta-settings-meetings-calendars" data-l10n-id="metta-settings-meetings-calendars"/>
+                  <html:span class="zen-settings-row-description" data-l10n-id="metta-settings-meetings-description"/>
+                </html:span>
+                <html:textarea id="metta-settings-meetings-calendars" class="zen-settings-input" rows="3" spellcheck="false" data-l10n-id="metta-settings-meetings-calendars-input"/>
+                <html:span id="metta-settings-meetings-status" class="zen-settings-row-description" hidden="hidden"/>
+              </html:div>
+              <html:div class="zen-settings-row">
+                <html:span id="metta-settings-meetings-lead-label" class="zen-settings-row-text" data-l10n-id="metta-settings-meetings-lead"/>
+                <menulist id="metta-settings-meetings-lead" data-pref="zen.meetings.lead-minutes" aria-labelledby="metta-settings-meetings-lead-label">
+                  <menupopup>
+                    <menuitem value="1" data-l10n-id="metta-settings-meetings-lead-1"/>
+                    <menuitem value="5" data-l10n-id="metta-settings-meetings-lead-5"/>
+                    <menuitem value="10" data-l10n-id="metta-settings-meetings-lead-10"/>
+                  </menupopup>
+                </menulist>
+              </html:div>
+            </html:div>
+          </html:div>
+
+          <html:div class="zen-settings-group">
+            <html:h2 data-l10n-id="metta-settings-security-header"/>
+            <html:div class="zen-settings-card">
+              <html:div class="zen-settings-row zen-settings-toggle-row">
+                <html:span class="zen-settings-row-text">
+                  <html:span data-l10n-id="metta-settings-security-enabled"/>
+                  <html:span class="zen-settings-row-description" data-l10n-id="metta-settings-security-description"/>
+                </html:span>
+                <html:moz-toggle class="zen-settings-toggle" data-pref="zen.security-watch.enabled"/>
+              </html:div>
+              <html:div class="zen-settings-row zen-settings-toggle-row" data-depends-on="zen.security-watch.enabled">
+                <html:span class="zen-settings-row-text" data-l10n-id="metta-settings-security-block-exploited"/>
+                <html:moz-toggle class="zen-settings-toggle" data-pref="zen.security-watch.block-exploited"/>
+              </html:div>
+              <html:div class="zen-settings-row" data-depends-on="zen.security-watch.enabled">
+                <html:span id="metta-settings-security-status" class="zen-settings-status">
+                  <html:span class="zen-settings-status-dot"/>
+                  <html:span id="metta-settings-security-status-text"/>
+                </html:span>
+                <html:button id="metta-settings-security-check-now" class="zen-settings-button" data-l10n-id="metta-settings-security-check-now"/>
+              </html:div>
+              <html:div id="metta-settings-security-update" class="zen-settings-row" hidden="hidden">
+                <html:span id="metta-settings-security-update-text" class="zen-settings-row-text"/>
+                <html:button id="metta-settings-security-update-button" class="zen-settings-button zen-settings-button-primary" data-l10n-id="metta-settings-security-update-button"/>
+              </html:div>
+            </html:div>
+          </html:div>
+        </html:section>

@@ -1,0 +1,24 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/* A row whose control sits under its text instead of beside it. */
+.metta-settings-stacked-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--zen-space-8);
+  padding-block: var(--zen-space-10);
+
+  & > .zen-settings-row-text {
+    flex: none;
+  }
+
+  & > textarea.zen-settings-input {
+    width: 100%;
+    padding-block: var(--zen-space-6);
+    resize: vertical;
+    /* One address per line, however long it is. */
+    white-space: pre;
+    overflow-x: auto;
+  }
+}

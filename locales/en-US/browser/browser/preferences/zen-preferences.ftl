@@ -134,81 +134,6 @@ zen-pinned-tab-manager-close-close-shortcut-option =
     .label = Close tab
 
 pane-zen-workspaces-header = Workspaces
-pane-zen-tab-archive-title = Auto Archive
-zen-tab-archive-header = Archive inactive tabs
-zen-tab-archive-description = Tabs you have not used for a while are unloaded, then moved to the Archive in the Library one period later. Pinned tabs, Essentials, and tabs playing media or with unsaved changes are never archived.
-zen-tab-archive-threshold-label = Archive tabs after
-zen-tab-archive-threshold-12-hours =
-    .label = 12 hours
-zen-tab-archive-threshold-24-hours =
-    .label = 24 hours
-zen-tab-archive-threshold-7-days =
-    .label = 7 days
-zen-tab-archive-threshold-30-days =
-    .label = 30 days
-zen-tab-archive-threshold-never =
-    .label = Never
-zen-tab-archive-now =
-    .label = Archive Inactive Tabs Now
-zen-tab-archive-now-done =
-    { $count ->
-        [one] Archived 1 tab
-       *[other] Archived { $count } tabs
-    }
-zen-tab-archive-write-failed = Auto Archive is paused because the archive could not be saved. Archive inactive tabs now to try again.
-
-pane-zen-meetings-title = Meetings
-zen-meetings-header = Join meetings from the sidebar
-zen-meetings-description = A few minutes before a meeting with a Zoom, Google Meet, Teams or Webex link, a Join button appears in the sidebar. Add the private address of each calendar to watch: in Google Calendar it is under Settings, your calendar, “Secret address in iCal format”; in Outlook, publish the calendar and copy its ICS link.
-zen-meetings-calendars-label = Calendar addresses, one per line
-zen-meetings-calendars-input =
-    .placeholder = https://calendar.google.com/calendar/ical/…/basic.ics
-# $count (Number) - Meetings with a video link left today
-zen-meetings-status =
-    { $count ->
-        [0] No more meetings with a video link today
-        [one] 1 more meeting with a video link today
-       *[other] { $count } more meetings with a video link today
-    }
-# $failed (Number) - Calendars that could not be loaded
-zen-meetings-status-failed =
-    { $failed ->
-        [one] 1 calendar could not be loaded. Check its address.
-       *[other] { $failed } calendars could not be loaded. Check their addresses.
-    }
-zen-meetings-lead-label = Show the Join button
-zen-meetings-lead-1 =
-    .label = 1 minute before
-zen-meetings-lead-5 =
-    .label = 5 minutes before
-zen-meetings-lead-10 =
-    .label = 10 minutes before
-
-pane-zen-security-watch-title = Security fixes
-zen-security-watch-header = Warn when security fixes are missing
-zen-security-watch-description = This build does not update itself. A few times a day it checks Mozilla’s security advisories for fixes that newer Firefox releases have and it lacks, and asks before you carry on without a serious one.
-zen-security-watch-enabled =
-    .label = Check for missing security fixes
-zen-security-watch-block-exploited =
-    .label = Pause browsing while a fix for a vulnerability used in attacks is missing
-zen-security-watch-check-now =
-    .label = Check Now
-zen-security-watch-status-unchecked =
-    .value = Not checked yet
-zen-security-watch-status-failed =
-    .value = The last check could not reach the advisories
-# $current (String) - The Firefox version this build is based on
-# $time (Date) - When the last check ran
-zen-security-watch-status-current =
-    .value = No fixes missing for Firefox { $current } · checked { DATETIME($time, dateStyle: "medium", timeStyle: "short") }
-# $current (String) - The Firefox version this build is based on
-# $latest (String) - The newest Firefox version with security fixes
-# $time (Date) - When the last check ran
-zen-security-watch-status-behind =
-    .value = Based on Firefox { $current }; fixes in Firefox { $latest } are missing · checked { DATETIME($time, dateStyle: "medium", timeStyle: "short") }
-zen-security-watch-status-exploited =
-    .value = Based on Firefox { $current }; Firefox { $latest } fixes a vulnerability used in attacks · checked { DATETIME($time, dateStyle: "medium", timeStyle: "short") }
-
 zen-settings-workspaces-header = General settings for workspaces
 zen-settings-workspaces-description = With workspaces, you can have multiple browsing sessions at once!
 zen-settings-workspaces-enabled =
@@ -268,9 +193,6 @@ zen-theme-marketplace-dropdown-default-label =
 zen-theme-marketplace-input-default-placeholder =
     .placeholder = Type something...
 pane-zen-marketplace-title = Zen Mods
-zen-themes-auto-update =
-   .label = Automatically update installed mods on startup
-
 zen-settings-workspaces-force-container-tabs-to-workspace =
     .label = Switch to workspace where container is set as default when opening container tabs
 
@@ -294,10 +216,10 @@ category-zen-CKS =
 category-zen-marketplace =
     .tooltiptext = Zen Mods
 
-zenCKSOption-group-zen-compact-mode = Compact Mode
-zenCKSOption-group-zen-workspace = Workspaces
-zenCKSOption-group-zen-other = Other Zen Features
+zenCKSOption-group-zen-workspace = Spaces
+zenCKSOption-group-zen-tabs = Tabs
 zenCKSOption-group-zen-split-view = Split View
+zenCKSOption-group-zen-layout = Layout
 
 zen-text-action-copy-url-shortcut = Copy current URL
 zen-text-action-copy-url-markdown-shortcut = Copy current URL as Markdown

@@ -15,7 +15,7 @@ Metta is a personal build of [Zen Browser](https://github.com/zen-browser/deskto
 
 - **Auto Archive** — tabs nobody has used for a while are unloaded, then closed and kept in an archive in the Library, from where they reopen in the space and container they came from. Spaces can opt out, and the archive syncs between devices.
 - **Join button for meetings** — give Metta the private iCal address of your calendars and a card appears in the sidebar shortly before a video meeting starts, with a button that opens the call.
-- **Security fix watch** — Metta does not update itself, so a few times a day it checks Mozilla's security advisories for fixes that newer Firefox releases have and it lacks. A missing fix rated high or critical is asked about once, three days after it comes out. A missing fix for a vulnerability already used in attacks (per the advisory or CISA's Known Exploited Vulnerabilities catalog) pauses web browsing until you approve, once per session. It is under Settings, Tab Management, Security fixes.
+- **Security fix watch** — Metta does not update itself, so a few times a day it checks Mozilla's security advisories for fixes that newer Firefox releases have and it lacks. A missing fix rated high or critical is asked about once, three days after it comes out. A missing fix for a vulnerability already used in attacks (per the advisory or CISA's Known Exploited Vulnerabilities catalog) pauses web browsing until you approve, once per session. It is under Settings, Metta, Security fixes.
 - **Its own name, icon and bundle id** (`app.zen-browser.metta`), so it installs next to Zen.
 
 ### Versions

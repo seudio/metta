@@ -8,6 +8,8 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   CustomKeys: "moz-src:///browser/components/customkeys/CustomKeys.sys.mjs",
+  CustomKeysParent:
+    "moz-src:///browser/components/customkeys/CustomKeysParent.sys.mjs",
   ShortcutUtils: "resource://gre/modules/ShortcutUtils.sys.mjs",
 });
 
@@ -16,6 +18,14 @@ ChromeUtils.defineLazyGetter(
   "l10n",
   () => new Localization(["browser/preferences/zen-preferences.ftl"])
 );
+
+ChromeUtils.defineLazyGetter(
+  lazy,
+  "customKeysL10n",
+  () => new Localization(["branding/brand.ftl", "browser/customkeys.ftl"])
+);
+
+const CUSTOM_KEYS_L10N_PREFIX = "customkeys-";
 
 // Shortcuts used to live in this file, managed entirely by Zen. They are now
 // plain <key> elements in zen-keysets.inc.xhtml and customizations are
@@ -33,16 +43,6 @@ const LEGACY_DEVTOOLS_GROUP = "devTools";
  */
 const ZEN_KEY_CATEGORIES = [
   {
-    l10nId: "zenCKSOption-group-zen-compact-mode",
-    keys: [
-      ["zen-compact-mode-toggle", "zen-compact-mode-shortcut-toggle"],
-      [
-        "zen-compact-mode-show-sidebar",
-        "zen-compact-mode-shortcut-show-sidebar",
-      ],
-    ],
-  },
-  {
     l10nId: "zenCKSOption-group-zen-workspace",
     menuId: "zen-spaces-menubar",
     keys: [
@@ -51,7 +51,18 @@ const ZEN_KEY_CATEGORIES = [
         `zen-workspace-shortcut-switch-${i + 1}`,
       ]),
       ["zen-workspace-create", "zen-workspace-shortcut-create"],
+    ],
+  },
+  {
+    l10nId: "zenCKSOption-group-zen-tabs",
+    keys: [
+      ["zen-toggle-pin-tab", "zen-toggle-pin-tab-shortcut"],
+      ["zen-pinned-tab-reset-shortcut", "zen-pinned-tab-shortcut-reset"],
+      ["zen-duplicate-tab", "zen-duplicate-tab-shortcut"],
       ["zen-close-all-unpinned-tabs", "zen-close-all-unpinned-tabs-shortcut"],
+      ["zen-glance-expand", "zen-glance-expand"],
+      ["zen-copy-url", "zen-text-action-copy-url-shortcut"],
+      ["zen-copy-url-markdown", "zen-text-action-copy-url-markdown-shortcut"],
     ],
   },
   {
@@ -65,16 +76,15 @@ const ZEN_KEY_CATEGORIES = [
     ],
   },
   {
-    l10nId: "zenCKSOption-group-zen-other",
+    l10nId: "zenCKSOption-group-zen-layout",
     keys: [
+      ["zen-compact-mode-toggle", "zen-compact-mode-shortcut-toggle"],
+      [
+        "zen-compact-mode-show-sidebar",
+        "zen-compact-mode-shortcut-show-sidebar",
+      ],
       ["zen-toggle-sidebar", "zen-sidebar-shortcut-toggle"],
       ["zen-library-toggle", "zen-library-shortcut-toggle"],
-      ["zen-glance-expand", "zen-glance-expand"],
-      ["zen-toggle-pin-tab", "zen-toggle-pin-tab-shortcut"],
-      ["zen-pinned-tab-reset-shortcut", "zen-pinned-tab-shortcut-reset"],
-      ["zen-duplicate-tab", "zen-duplicate-tab-shortcut"],
-      ["zen-copy-url", "zen-text-action-copy-url-shortcut"],
-      ["zen-copy-url-markdown", "zen-text-action-copy-url-markdown-shortcut"],
     ],
   },
 ];
@@ -237,6 +247,7 @@ class nsZenKeyboardShortcuts {
     const values = await lazy.l10n.formatValues(ids.map(id => ({ id })));
     const text = Object.fromEntries(ids.map((id, i) => [id, values[i] ?? id]));
 
+    const zenKeys = {};
     for (const category of ZEN_KEY_CATEGORIES) {
       const menu = category.menuId
         ? document.getElementById(category.menuId)
@@ -252,10 +263,110 @@ class nsZenKeyboardShortcuts {
         entries[id] = data;
       }
       if (Object.keys(entries).length) {
-        Object.assign((keys[label] ??= {}), entries);
+        zenKeys[label] = { ...keys[label], ...entries };
+        delete keys[label];
       }
     }
-    return keys;
+    return { ...zenKeys, ...keys };
+  }
+
+  /**
+   * about:keyboard's actor knows how to list the shortcuts of a browser
+   * window and how to turn a key press into a binding. This gives its logic
+   * a browser window to work on without a page being involved.
+   *
+   * @param {Window} window The browser window whose keys are meant.
+   * @param {(name: string, data: object) => void} [onMessage]
+   *   Receives what the actor would have sent to its page.
+   */
+  #customKeysFor(window, onMessage = () => {}) {
+    return Object.create(lazy.CustomKeysParent.prototype, {
+      browsingContext: { value: { topChromeWindow: window } },
+      sendAsyncMessage: { value: onMessage },
+    });
+  }
+
+  /**
+   * Every shortcut that can be customized, Firefox's and Zen's, with the
+   * titles ready for display.
+   *
+   * @param {Window} window The browser window to read the keys from.
+   * @returns {Promise<Array<{label: string, keys: object[]}>>}
+   *   The categories, each key being { id, title, shortcut, isCustomized,
+   *   internal }.
+   */
+  async getShortcuts(window) {
+    const actor = this.#customKeysFor(window);
+    const categories = await this.addKeys(actor, actor.getKeys());
+    const l10nIds = new Set();
+    for (const [label, keys] of Object.entries(categories)) {
+      for (const text of [label, ...Object.values(keys).map(k => k.title)]) {
+        if (text?.startsWith(CUSTOM_KEYS_L10N_PREFIX)) {
+          l10nIds.add(text);
+        }
+      }
+    }
+    const ids = [...l10nIds];
+    const messages = await lazy.customKeysL10n.formatMessages(
+      ids.map(id => ({ id }))
+    );
+    const text = Object.fromEntries(
+      ids.map((id, i) => [
+        id,
+        messages[i]?.value ??
+          messages[i]?.attributes?.find(a => a.name == "heading")?.value ??
+          id,
+      ])
+    );
+    return Object.entries(categories)
+      .map(([label, keys]) => ({
+        label: text[label] ?? label,
+        keys: Object.entries(keys).map(([id, data]) => ({
+          ...data,
+          id,
+          title: text[data.title] ?? data.title ?? id,
+        })),
+      }))
+      .filter(category => category.keys.length);
+  }
+
+  /**
+   * @param {Window} window The browser window to read the key from.
+   * @param {string} id The id of the <key> element.
+   * @returns {{shortcut: string, isCustomized: boolean, internal: boolean}|null}
+   */
+  getShortcut(window, id) {
+    return this.#customKeysFor(window).getKeyData(id);
+  }
+
+  /**
+   * Turns a key press into the binding it would make as a shortcut.
+   *
+   * @param {Window} window A browser window.
+   * @param {KeyboardEvent} event A keydown event, which gets consumed.
+   * @returns {object} { isModifier, modifierString } while only modifiers are
+   *   held, otherwise { isValid, modifiers, key, keycode, shortcut }.
+   */
+  describeKeyEvent(window, event) {
+    let described = null;
+    this.#customKeysFor(window, (name, data) => {
+      described = data;
+    }).handleEvent(event);
+    return described;
+  }
+
+  /**
+   * @param {Window} window A browser window.
+   * @param {string} id The id of the <key> element.
+   * @returns {string} What the key is bound to by default, formatted for
+   *   display, or "" when it isn't customized or has no default.
+   */
+  getDefaultShortcutDisplay(window, id) {
+    const binding = lazy.CustomKeys.getDefaultKey(id);
+    if (!binding || (!binding.key && !binding.keycode)) {
+      return "";
+    }
+    return this.#customKeysFor(window).prettifyShortcut(binding);
   }
 
   /**

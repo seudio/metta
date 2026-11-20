@@ -268,7 +268,7 @@ export class ZenLibrary extends MozLitElement {
       );
       lazy.toastContainer.style.setProperty(
         "transform",
-        `translateX(${-(value * webOffset)}px)`
+        `translateY(var(--zen-element-separation)) translateX(${-(value * webOffset)}px)`
       );
 
       const toolboxProgress = Math.min(1, value * 3);
@@ -960,6 +960,7 @@ export class ZenLibrary extends MozLitElement {
   }
 
   #teardown() {
+    Services.prefs.removeObserver(HIDDEN_TABS_PREF, this.#tabsObserver);
     this.#cleanup();
     this.#cancelIdleCleanup();
     this.#contentMounted = false;
