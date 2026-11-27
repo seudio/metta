@@ -17,8 +17,13 @@ zen-settings-window-pane-links = Links
 zen-settings-window-pane-search = Search
 zen-settings-window-pane-language = Language
 zen-settings-window-pane-shortcuts = Shortcuts
-zen-settings-window-pane-privacy = Privacy
 zen-settings-window-pane-advanced = Advanced
+zen-settings-window-filter =
+    .placeholder = Search
+zen-settings-window-filter-results = Search Results
+zen-settings-window-filter-no-results = No settings match your search.
+zen-settings-window-link-privacy = Privacy & Security
+zen-settings-window-link-accessibility = Accessibility
 zen-settings-window-link-mods = Mods
 zen-settings-window-link-more = More Settings
 zen-settings-window-link-donate = Donate
@@ -41,6 +46,12 @@ zen-settings-window-download-location-ask =
     .label = Ask every time
 zen-settings-window-download-location-picker = Choose Download Folder
 
+zen-settings-window-updates-header = Updates
+zen-settings-window-update-version = Version { $version }
+zen-settings-window-update-check = Check for Updates…
+zen-settings-window-update-history = Update history
+zen-settings-window-update-history-button = Show…
+
 ## Appearance
 
 zen-settings-window-layout-header = Layout
@@ -51,12 +62,25 @@ zen-settings-window-layout-collapsed = Collapsed sidebar
 zen-settings-window-tabs-right = Show tabs on the right
 zen-settings-window-newtab-button = Show the new tab button in the tab list
 zen-settings-window-newtab-button-top = Keep the new tab button above the tabs
+zen-settings-window-backdrop-header = Window
+zen-settings-window-backdrop = Window backdrop
+zen-settings-window-backdrop-description = The material Windows draws behind { -brand-short-name }’s windows
+zen-settings-window-backdrop-mica =
+    .label = Mica
+zen-settings-window-backdrop-mica-alt =
+    .label = Mica Alt
+zen-settings-window-backdrop-acrylic =
+    .label = Acrylic
 
 ## Tabs
 
 zen-settings-window-tabs-header = Behavior
+zen-settings-window-tabs-links-in-tabs = Open links in tabs instead of new windows
+zen-settings-window-tabs-switch-to-new = When opening links or media in a new tab, switch to it immediately
+zen-settings-window-tabs-app-links-next-to-active = Open links from apps next to your active tab
 zen-settings-window-tabs-recently-used-on-close = Go to the most recently used tab when closing a tab
 zen-settings-window-tabs-close-on-back = Close a tab when going back with no history
+zen-settings-window-tabs-warn-on-close = Ask before closing multiple tabs
 zen-settings-window-tabs-warn-on-quit =
     { PLATFORM() ->
         [macos] Warn before quitting with ⌘Q
@@ -98,7 +122,6 @@ zen-settings-window-containers-remove-cancel = Cancel
 
 zen-settings-window-little-header = Little { -brand-short-name }
 zen-settings-window-little-description = Little { -brand-short-name } is a smaller, simpler { -brand-short-name } window, perfect for links from other apps or temporary links you don’t want in the main { -brand-short-name } window.
-zen-settings-window-little-enabled = Enable Little { -brand-short-name }
 zen-settings-window-little-global-shortcut = Open Little { -brand-short-name } with its shortcut from any app
 # Variables:
 #   $shortcut (String): the keyboard shortcut, e.g. ⌥⌘N
@@ -106,34 +129,7 @@ zen-settings-window-little-global-shortcut-key = Open Little { -brand-short-name
 zen-settings-window-little-external-links = Links from other apps open in Little { -brand-short-name }
 zen-settings-window-glance-header = Glance
 zen-settings-window-glance-description = Glance opens a link in a preview on top of the current tab. It’s perfect for quick lookups.
-zen-settings-window-glance-trigger = Open Glance when clicking on links with
-zen-settings-window-glance-trigger-ctrl =
-    .label = { PLATFORM() ->
-        [macos] ⌃ held
-       *[other] Ctrl held
-    }
-    .aria-label = { PLATFORM() ->
-        [macos] Control held
-       *[other] Ctrl held
-    }
-zen-settings-window-glance-trigger-alt =
-    .label = { PLATFORM() ->
-        [macos] ⌥ held
-       *[other] Alt held
-    }
-    .aria-label = { PLATFORM() ->
-        [macos] Option held
-       *[other] Alt held
-    }
-zen-settings-window-glance-trigger-shift =
-    .label = { PLATFORM() ->
-        [macos] ⇧ held
-       *[other] Shift held
-    }
-    .aria-label = Shift held
-zen-settings-window-glance-trigger-meta =
-    .label = ⌘ held
-    .aria-label = Command held
+zen-settings-window-glance-trigger = Open Glance when clicking on links with { $shortcut } held
 zen-settings-window-glance-external-links = Open Glance when clicking on links to other sites
 zen-settings-window-glance-external-links-note = This only affects Essentials and pinned tabs
 zen-settings-window-space-routing = Choose where links open inside { -brand-short-name }.
@@ -179,6 +175,18 @@ zen-settings-window-shortcuts-search =
 zen-settings-window-shortcuts-header = Keyboard Shortcuts
 zen-settings-window-shortcuts-description = Select a shortcut, then click its keys to record new ones. Press Delete to remove it or Escape to cancel.
 zen-settings-window-shortcuts-customized = Your Shortcuts
+zen-settings-window-shortcuts-conflict =
+    .aria-label = When a website uses the same shortcut
+zen-settings-window-shortcuts-conflict-both =
+    .label = Use Both
+zen-settings-window-shortcuts-conflict-zen =
+    .label = Prefer { -brand-short-name }
+zen-settings-window-shortcuts-conflict-website =
+    .label = Prefer Website
+zen-settings-window-shortcuts-conflict-both-description = Press a shortcut once to use the website’s shortcut. Press it twice to use { -brand-short-name }’s shortcut.
+zen-settings-window-shortcuts-conflict-zen-description = When a website uses the same shortcut, { -brand-short-name }’s shortcut always runs.
+zen-settings-window-shortcuts-conflict-website-description = When a website uses the same shortcut, the website’s shortcut always runs.
+zen-settings-window-shortcuts-conflict-reserved-description = { -brand-short-name } always runs this shortcut, so websites can’t take it over.
 zen-settings-window-shortcuts-reset-one = Reset Shortcut to Default
 zen-settings-window-shortcuts-more = •••
     .title = More
@@ -192,24 +200,6 @@ zen-settings-window-shortcuts-unassigned = ---
 zen-settings-window-shortcuts-recording = Press keys…
 zen-settings-window-shortcuts-no-window = Open a { -brand-short-name } window to see and change its shortcuts.
 zen-settings-window-shortcuts-no-results = No shortcuts match your search.
-
-## Privacy
-
-zen-settings-window-protection-header = Protection
-zen-settings-window-tracking-protection = Tracking protection
-zen-settings-window-tracking-protection-standard =
-    .label = Standard
-zen-settings-window-tracking-protection-strict =
-    .label = Strict
-zen-settings-window-tracking-protection-custom =
-    .label = Custom
-zen-settings-window-global-privacy-control = Tell websites not to sell or share my data
-zen-settings-window-https-only = Only connect to websites over HTTPS
-zen-settings-window-data-header = Browsing Data
-zen-settings-window-save-passwords = Ask to save passwords
-zen-settings-window-clear-data = Cookies, history and site data
-zen-settings-window-clear-data-button = Clear Data…
-zen-settings-window-more-privacy = More Privacy Settings…
 
 ## Sync
 
@@ -256,6 +246,8 @@ zen-settings-window-sync-more = More Sync Settings…
 zen-settings-window-browsing-header = Browsing
 zen-settings-window-smooth-scroll = Use smooth scrolling
 zen-settings-window-autoscroll = Use autoscrolling
+zen-settings-window-caret-browsing = Always use the cursor keys to navigate within pages
+zen-settings-window-find-as-you-type = Search for text when you start typing
 zen-settings-window-media-header = Media
 zen-settings-window-drm = Play DRM-controlled content
 zen-settings-window-pip-toggle = Show picture-in-picture video controls
@@ -264,4 +256,5 @@ zen-settings-window-window-header = Window
 zen-settings-window-haptic-feedback = Haptic feedback when reordering tabs
 zen-settings-window-drag-from-content = Drag the window from the top of the page
 zen-settings-window-compact-flash-popup = Briefly show the toolbar when switching tabs in compact mode
+zen-settings-window-performance-header = Performance
 zen-settings-window-more-settings = More Settings…

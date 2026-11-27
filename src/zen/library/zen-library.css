@@ -873,7 +873,7 @@ zen-library:not([open]) :is(.zen-library-search-header, .zen-library-filter-head
   flex: none;
   margin-inline: var(--zen-space-14);
   padding-block: var(--zen-space-10) var(--zen-space-14);
-  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
   -moz-window-dragging: no-drag;
 
   & h3 {
@@ -1282,6 +1282,11 @@ zen-library-archive-section .zen-library-archive-space::before {
     border-radius: var(--zen-border-radius-14);
     box-shadow: var(--zen-library-space-shadow);
     transition: box-shadow 0.2s ease;
+
+    &::before,
+    &::after {
+      border-radius: inherit;
+    }
   }
 
   &[dragging] {

@@ -6,6 +6,10 @@
 #ifdef XP_MACOSX
 #include ../../browser/base/content/titlebar-items.inc.xhtml
 #endif
+      <html:label id="zen-settings-filter-box">
+        <html:img src="chrome://browser/skin/zen-icons/search-glass.svg" alt=""/>
+        <html:input id="zen-settings-filter" type="search" data-l10n-id="zen-settings-window-filter"/>
+      </html:label>
       <html:div id="zen-settings-categories" role="tablist" aria-orientation="vertical">
         <html:button class="zen-settings-category" role="tab" data-pane="general" aria-controls="zen-settings-pane-general">
           <html:img src="chrome://browser/skin/zen-icons/settings.svg" alt=""/>
@@ -43,19 +47,26 @@
           <html:img src="chrome://browser/skin/zen-icons/text-title-case.svg" alt=""/>
           <html:span data-l10n-id="zen-settings-window-pane-shortcuts"/>
         </html:button>
-        <html:button class="zen-settings-category" role="tab" data-pane="privacy" aria-controls="zen-settings-pane-privacy">
-          <html:img src="chrome://browser/skin/zen-icons/security.svg" alt=""/>
-          <html:span data-l10n-id="zen-settings-window-pane-privacy"/>
-        </html:button>
         <html:button class="zen-settings-category" role="tab" data-pane="advanced" aria-controls="zen-settings-pane-advanced">
           <html:img src="chrome://browser/skin/zen-icons/sliders.svg" alt=""/>
           <html:span data-l10n-id="zen-settings-window-pane-advanced"/>
         </html:button>
       </html:div>
 
+      <html:div id="zen-settings-firefox-links">
+        <html:button class="zen-settings-category" data-action="open-privacy-settings">
+          <html:img src="chrome://browser/skin/zen-icons/security.svg" alt=""/>
+          <html:span data-l10n-id="zen-settings-window-link-privacy"/>
+        </html:button>
+        <html:button class="zen-settings-category" data-action="open-accessibility-settings">
+          <html:img src="chrome://browser/skin/preferences/category-accessibility.svg" alt=""/>
+          <html:span data-l10n-id="zen-settings-window-link-accessibility"/>
+        </html:button>
+      </html:div>
+
       <html:div id="zen-settings-links">
         <html:button class="zen-settings-category" data-action="open-mods">
-          <html:img src="chrome://browser/skin/zen-icons/wand-sparkle.svg" alt=""/>
+          <html:img src="chrome://browser/skin/zen-icons/paintbrush.svg" alt=""/>
           <html:span data-l10n-id="zen-settings-window-link-mods"/>
         </html:button>
         <html:button class="zen-settings-category" data-action="open-more-settings">

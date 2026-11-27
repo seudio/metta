@@ -39,7 +39,7 @@
                 </html:div>
                 <html:div id="zen-settings-sync-problem" class="zen-settings-row">
                   <html:span class="zen-settings-status" data-state="warning">
-                    <html:span class="zen-settings-status-dot"/>
+                    <html:span class="zen-settings-status-dot no-squircles"/>
                     <html:span id="zen-settings-sync-problem-text"/>
                   </html:span>
                   <html:button class="zen-settings-button zen-settings-button-primary" data-action="sync-sign-in-again" data-l10n-id="zen-settings-window-sync-sign-in-again"/>
@@ -47,7 +47,7 @@
                 <html:div id="zen-settings-sync-summary-row" class="zen-settings-row">
                   <html:span class="zen-settings-row-text" data-l10n-id="zen-settings-window-sync-header"/>
                   <html:span id="zen-settings-sync-summary" class="zen-settings-status" data-state="success">
-                    <html:span class="zen-settings-status-dot"/>
+                    <html:span class="zen-settings-status-dot no-squircles"/>
                     <html:span id="zen-settings-sync-summary-text"/>
                   </html:span>
                   <html:button class="zen-settings-button" data-action="sync-open-dialog" data-l10n-id="zen-settings-window-sync-settings"/>
@@ -91,6 +91,29 @@
                     <menuitem value="ask" data-l10n-id="zen-settings-window-download-location-ask"/>
                   </menupopup>
                 </menulist>
+              </html:div>
+            </html:div>
+          </html:div>
+
+          <html:div id="zen-settings-updates" class="zen-settings-group" hidden="hidden">
+            <html:h2 data-l10n-id="zen-settings-window-updates-header"/>
+            <html:div class="zen-settings-card">
+              <html:div class="zen-settings-row">
+                <html:span id="zen-settings-update-version" class="zen-settings-row-text"/>
+                <html:button class="zen-settings-button" data-action="open-about" data-l10n-id="zen-settings-window-update-check"/>
+              </html:div>
+              <html:div class="zen-settings-row">
+                <html:span id="zen-settings-update-install-label" class="zen-settings-row-text" data-label-from="update-application-installation"/>
+                <menulist id="zen-settings-update-install" aria-labelledby="zen-settings-update-install-label">
+                  <menupopup>
+                    <menuitem value="auto" data-l10n-id="update-application-auto-2"/>
+                    <menuitem value="manual" data-l10n-id="update-application-check-choose-2"/>
+                  </menupopup>
+                </menulist>
+              </html:div>
+              <html:div class="zen-settings-row">
+                <html:span class="zen-settings-row-text" data-l10n-id="zen-settings-window-update-history"/>
+                <html:button class="zen-settings-button" data-action="show-update-history" data-l10n-id="zen-settings-window-update-history-button"/>
               </html:div>
             </html:div>
           </html:div>

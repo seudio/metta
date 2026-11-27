@@ -505,6 +505,13 @@ export class ZenLibrary extends MozLitElement {
     }
   }
 
+  static get isAvailable() {
+    return (
+      Services.prefs.getBoolPref("zen.library.enabled") &&
+      !gZenVerticalTabsManager.hidesTabsToolbar
+    );
+  }
+
   /**
    * Opens or closes the library. With a tab id, opens the library on that
    * tab, switches to it if already open on another, or closes if it is
@@ -513,7 +520,7 @@ export class ZenLibrary extends MozLitElement {
    * @param {string?} [tab] - A section id to open on
    */
   static toggle(tab = undefined) {
-    if (!Services.prefs.getBoolPref("zen.library.enabled")) {
+    if (!this.isAvailable) {
       return;
     }
 
@@ -631,7 +638,7 @@ export class ZenLibrary extends MozLitElement {
   static readySwipeOpenLibrary() {
     const spaces = gZenWorkspaces.getWorkspaces();
     const current = gZenWorkspaces.getActiveWorkspaceFromCache();
-    const libraryEnabled = Services.prefs.getBoolPref("zen.library.enabled");
+    const libraryEnabled = this.isAvailable;
     const libraryOnRight = this.libraryOnRight;
 
     return (

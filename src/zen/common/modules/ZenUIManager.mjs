@@ -39,6 +39,7 @@ class nsZenUIManager {
 
   #toasts = new nsZenToastManager();
   #urlbar = new nsZenUrlbarController();
+  #zoomChangeListener = null;
 
   // Elements that get `has-popup-menu` while a popup opened from them is up.
   #popupTrackingElements = new Set();
@@ -59,7 +60,15 @@ class nsZenUIManager {
     document.addEventListener("popuphidden", this);
     document.addEventListener("mousedown", this, true);
     window.addEventListener("TabClose", this);
-    window.addEventListener("FullZoomChange", this);
+    for (const id of [
+      "cmd_fullZoomEnlarge",
+      "cmd_fullZoomReduce",
+      "cmd_fullZoomReset",
+    ]) {
+      document.getElementById(id).addEventListener("command", () => {
+        this.#onZoomCommand();
+      });
+    }
 
     gZenWorkspaces.promiseInitialized.finally(() => {
       this._hasLoadedDOM = true;
@@ -95,9 +104,6 @@ class nsZenUIManager {
         break;
       case "TabClose":
         this.onTabClose(event);
-        break;
-      case "FullZoomChange":
-        this.#onFullZoomChange(event);
         break;
     }
   }
@@ -307,8 +313,36 @@ class nsZenUIManager {
     return this.#toasts.show(messageId, options);
   }
 
-  #onFullZoomChange(event) {
-    const browser = event.originalTarget;
+  /**
+   * Takes a toast down before its timeout, for when what it asked the user
+   * to do has been done.
+   *
+   * @param {string} messageId - Fluent id of the toast to hide.
+   */
+  hideToast(messageId) {
+    this.#toasts.hide(messageId);
+  }
+
+  #onZoomCommand() {
+    const browser = gBrowser.selectedBrowser;
+    if (this.#zoomChangeListener) {
+      window.removeEventListener("FullZoomChange", this.#zoomChangeListener);
+    }
+    this.#zoomChangeListener = event => {
+      if (event.originalTarget !== browser) {
+        return;
+      }
+      this.#zoomChangeListener = null;
+      if (browser === gBrowser.selectedBrowser) {
+        this.#onFullZoomChange(browser);
+      }
+    };
+    window.addEventListener("FullZoomChange", this.#zoomChangeListener, {
+      once: true,
+    });
+  }
+
+  #onFullZoomChange(browser) {
     const isSingleToolbar = gZenVerticalTabsManager._hasSetSingleToolbar;
     const zoomButtonHidden =
       isSingleToolbar &&
@@ -326,12 +360,7 @@ class nsZenUIManager {
       (!browser.contentPrincipal || browser.contentPrincipal.isNullPrincipal);
     const isPdfViewer =
       browser.contentPrincipal?.spec === "resource://pdf.js/web/viewer.html";
-    if (
-      browser !== gBrowser.selectedBrowser ||
-      !showToast ||
-      isBlankPage ||
-      isPdfViewer
-    ) {
+    if (!showToast || isBlankPage || isPdfViewer) {
       return;
     }
 
@@ -364,7 +393,7 @@ class nsZenUIManager {
     gZenVerticalTabsManager.actualWindowButtons.removeAttribute(
       "zen-has-hover"
     );
-    gZenVerticalTabsManager.recalculateURLBarHeight(!fromResizeEvent);
+    gZenVerticalTabsManager.recalculateURLBarHeight();
     if (!this._preventToolbarRebuild && !fromResizeEvent) {
       setTimeout(() => {
         gZenWorkspaces.updateTabsContainers();
@@ -375,6 +404,11 @@ class nsZenUIManager {
 
   onTabClose(event = undefined) {
     if (!event?.target?._closedInMultiselection) {
+      if (event) {
+        // _endRemoveTab already refreshes the tab containers once the tab is
+        // gone, so don't queue another refresh for every closed tab.
+        this._preventToolbarRebuild = true;
+      }
       this.updateTabsToolbar();
     }
   }
