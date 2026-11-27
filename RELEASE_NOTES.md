@@ -8,6 +8,31 @@ Zen release they are based on. Downloads are on the
 Every release, and every new feature, gets an entry here. The same text goes in
 the GitHub release and on [seud.io/metta/releases](https://seud.io/metta/releases/).
 
+## Metta 1.25b
+
+26 November 2026 · based on Zen 1.25b and Firefox 161.0
+
+- **Security fixes from Firefox 161.** Mozilla's advisory for this release
+  lists 110 fixes, more than half of them rated high. None is reported as being
+  used in attacks. If Metta has been telling you a security fix is missing,
+  this is the build that has it.
+- **Links from other apps stay out of the way.** A link that opens in a Little
+  Metta window no longer pulls your other Metta windows in front of the app
+  you clicked it in. Little windows are also larger.
+- **Import windows from Dia.** Zen's importer can now bring over open windows
+  from the Dia browser.
+- **Cmd+T opens an extension's new-tab page**, if you have an extension that
+  provides one.
+- **Cmd+1 to Cmd+9 skip Glance tabs**, so the shortcuts land on the tabs you
+  see in the sidebar.
+- **Session backups recover better** after a crash or a full disk.
+- A space you have just created is no longer lost when you switch away from it
+  with the sidebar on the right.
+- The zoom notice shows only when you change zoom from the keyboard.
+- Less work on tab, media and hover events, so the sidebar and space switching
+  are lighter.
+- Everything else new in Zen 1.25b.
+
 ## Metta 1.24.3b
 
 20 November 2026 · based on Zen 1.24.3b and Firefox 160.0.1
